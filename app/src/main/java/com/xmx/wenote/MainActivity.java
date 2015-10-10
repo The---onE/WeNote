@@ -1,0 +1,200 @@
+package com.xmx.wenote;
+
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
+import android.os.Parcelable;
+import android.provider.MediaStore;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        initImageView();
+        initTextView();
+        initViewPager();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private ViewPager pager;
+    private ImageView cursor;
+    private int bmpW;
+    private int offset;
+    private int currIndex;
+
+    private void initImageView() {
+        cursor = (ImageView)findViewById(R.id.cursor);
+        bmpW = BitmapFactory.decodeResource(getResources(), R.drawable.cursor).getWidth();// 获取图片宽度
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int screenW = dm.widthPixels;// 获取分辨率宽度
+        offset = (screenW / 3 - bmpW) / 2;// 计算偏移量
+        Matrix matrix = new Matrix();
+        matrix.postTranslate(offset, 0);
+        cursor.setImageMatrix(matrix);// 设置动画初始位置
+    }
+
+    private void initTextView() {
+        findViewById(R.id.timeline).setOnClickListener(new MyOnClickListener(0));
+        findViewById(R.id.note).setOnClickListener(new MyOnClickListener(1));
+        findViewById(R.id.plan).setOnClickListener(new MyOnClickListener(2));
+    }
+
+    private class MyOnClickListener implements View.OnClickListener {
+        private int index = 0;
+        private MyOnClickListener(int i) {
+            index = i;
+        }
+        @Override
+        public void onClick(View v) {
+            pager.setCurrentItem(index);
+        }
+    }
+
+    private void initViewPager() {
+        pager = (ViewPager)findViewById(R.id.pager);
+        List<View> views = new ArrayList<>();
+        LayoutInflater mInflater = getLayoutInflater();
+        views.add(mInflater.inflate(R.layout.timeline_view, null));
+        views.add(mInflater.inflate(R.layout.note_view, null));
+        views.add(mInflater.inflate(R.layout.plan_view, null));
+        pager.setAdapter(new MyPagerAdapter(views));
+        pager.setCurrentItem(0);
+        pager.addOnPageChangeListener(new MyOnPageChangeListener());
+    }
+
+    public class MyPagerAdapter extends PagerAdapter {
+        private List<View> views;
+        public MyPagerAdapter(List<View> v) { views = v; }
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView(views.get(position));
+        }
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            container.addView(views.get(position), 0);
+            return views.get(position);
+        }
+        @Override
+        public int getCount() {
+            return views.size();
+        }
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+    }
+
+    public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
+
+        int one = offset * 2 + bmpW;// 页卡1 -> 页卡2 偏移量
+        int two = one * 2;// 页卡1 -> 页卡3 偏移量
+
+        @Override
+        public void onPageSelected(int position) {
+            Animation animation = null;
+            switch (position) {
+                case 0:
+                    if (currIndex == 1) {
+                        animation = new TranslateAnimation(one, 0, 0, 0);
+                    } else if (currIndex == 2) {
+                        animation = new TranslateAnimation(two, 0, 0, 0);
+                    }
+                    break;
+                case 1:
+                    if (currIndex == 0) {
+                        animation = new TranslateAnimation(0, one, 0, 0);
+                    } else if (currIndex == 2) {
+                        animation = new TranslateAnimation(two, one, 0, 0);
+                    }
+                    break;
+                case 2:
+                    if (currIndex == 0) {
+                        animation = new TranslateAnimation(0, two, 0, 0);
+                    } else if (currIndex == 1) {
+                        animation = new TranslateAnimation(one, two, 0, 0);
+                    }
+                    break;
+            }
+            if (animation != null) {
+                currIndex = position;
+                animation.setFillAfter(true);// True:图片停在动画结束位置
+                animation.setDuration(300);
+                cursor.startAnimation(animation);
+            }
+        }
+        @Override
+        public void onPageScrolled(int position, float offset, int offsetPixels) {
+        }
+        @Override
+        public void onPageScrollStateChanged(int state) {
+        }
+    }
+
+    static final int RESULT_LOAD_IMAGE = 1;
+    public void onChooseClick(View view) {
+        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, RESULT_LOAD_IMAGE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            ImageView imageView = (ImageView) findViewById(R.id.testPhoto);
+            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+
+        }
+    }
+}
