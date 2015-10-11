@@ -5,26 +5,24 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v4.view.PagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,35 +92,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViewPager() {
         pager = (ViewPager)findViewById(R.id.pager);
-        List<View> views = new ArrayList<>();
-        LayoutInflater mInflater = getLayoutInflater();
-        views.add(mInflater.inflate(R.layout.timeline_view, null));
-        views.add(mInflater.inflate(R.layout.note_view, null));
-        views.add(mInflater.inflate(R.layout.plan_view, null));
-        pager.setAdapter(new MyPagerAdapter(views));
+        ArrayList<Fragment> views = new ArrayList<>();
+        views.add(new TimelineFragment());
+        views.add(new NoteFragment());
+        views.add(new PlanFragment());
+
+        pager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), views));
         pager.setCurrentItem(0);
         pager.addOnPageChangeListener(new MyOnPageChangeListener());
     }
 
-    public class MyPagerAdapter extends PagerAdapter {
-        private List<View> views;
-        public MyPagerAdapter(List<View> v) { views = v; }
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(views.get(position));
-        }
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(views.get(position), 0);
-            return views.get(position);
+    public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+        ArrayList<Fragment> views;
+        public MyFragmentPagerAdapter(FragmentManager fm,ArrayList<Fragment> list){
+            super(fm);
+            this.views = list;
         }
         @Override
         public int getCount() {
             return views.size();
         }
+
         @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
+        public Fragment getItem(int position) {
+            return views.get(position);
         }
     }
 
