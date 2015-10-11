@@ -185,9 +185,8 @@ public class MainActivity extends FragmentActivity {
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            ImageView imageView = (ImageView) findViewById(R.id.testPhoto);
+            ImageView imageView = (ImageView)findViewById(R.id.testPhoto);
             imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-
         }
     }
 }
