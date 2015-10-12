@@ -16,6 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ChoosePhoto.PhotoActivity"/>
+        <activity android:name=".ChoosePhoto.PhotoAlbumActivity"/>
+        <activity android:name=".ChoosePhoto.ShowBigPic"/>
     </application>
 
     <!--
@@ -25,4 +28,5 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 </manifest>

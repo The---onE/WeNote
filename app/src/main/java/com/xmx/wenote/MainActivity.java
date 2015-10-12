@@ -20,6 +20,9 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
+import com.xmx.wenote.ChoosePhoto.PhotoActivity;
+import com.xmx.wenote.ChoosePhoto.PhotoAlbumActivity;
+
 import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity {
@@ -167,8 +170,9 @@ public class MainActivity extends FragmentActivity {
 
     static final int RESULT_LOAD_IMAGE = 1;
     public void onChooseClick(View view) {
-        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i, RESULT_LOAD_IMAGE);
+        //Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent i = new Intent(this, PhotoAlbumActivity.class);
+        startActivity(i);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
