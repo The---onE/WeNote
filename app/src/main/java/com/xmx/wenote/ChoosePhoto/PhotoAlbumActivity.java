@@ -64,6 +64,7 @@ public class PhotoAlbumActivity extends Activity {
         Map<String, PhotoAlbum> countMap = new LinkedHashMap<>();
         PhotoAlbum pa;
         cursor.moveToLast();
+        cursor.moveToNext();
         while (cursor.moveToPrevious()) {
             String path = cursor.getString(1);
             String id = cursor.getString(3);

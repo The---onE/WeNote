@@ -21,10 +21,6 @@ public class PhotoAlbum implements Serializable {
         return bitList;
     }
 
-    public void setBitList(List<PhotoItem> bitList) {
-        this.bitList = bitList;
-    }
-
     public String getName() {
         return name;
     }
@@ -35,10 +31,6 @@ public class PhotoAlbum implements Serializable {
 
     public String getCount() {
         return String.valueOf(count);
-    }
-
-    public void setCount(int count) {
-        this.count = count;
     }
 
     public void increaseCount() {

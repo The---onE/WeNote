@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbum;
@@ -17,23 +16,23 @@ import com.xmx.wenote.R;
 import java.util.List;
 
 public class PhotoAlbumAdapter extends BaseAdapter {
-    private List<PhotoAlbum> aibumList;
+    private List<PhotoAlbum> albumList;
     private Context context;
     private ViewHolder holder;
 
     public PhotoAlbumAdapter(List<PhotoAlbum> list, Context context) {
-        this.aibumList = list;
+        this.albumList = list;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return aibumList.size();
+        return albumList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return aibumList.get(position);
+        return albumList.get(position);
     }
 
     @Override
@@ -52,10 +51,10 @@ public class PhotoAlbumAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        /** 通过ID 获取缩略图*/
-        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(), aibumList.get(position).getBitmap(), MediaStore.Images.Thumbnails.MICRO_KIND, null);
+        //通过ID 获取缩略图
+        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(), albumList.get(position).getBitmap(), MediaStore.Images.Thumbnails.MICRO_KIND, null);
         holder.iv.setImageBitmap(bitmap);
-        holder.tv.setText(aibumList.get(position).getName() + " ( " + aibumList.get(position).getCount() + " )");
+        holder.tv.setText(albumList.get(position).getName() + "(" + albumList.get(position).getCount() + ")");
         return convertView;
     }
 
