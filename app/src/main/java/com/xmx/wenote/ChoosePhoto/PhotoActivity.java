@@ -19,15 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.xmx.wenote.ChoosePhoto.adapter.PhotoAdappter;
-import com.xmx.wenote.ChoosePhoto.entities.PhotoAibum;
+import com.xmx.wenote.ChoosePhoto.adapter.PhotoAdapter;
+import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbum;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoItem;
 import com.xmx.wenote.R;
 
 public class PhotoActivity extends Activity {
     private GridView gv, gl_bottom;
-    private PhotoAibum aibum;
-    private PhotoAdappter adapter;
+    private PhotoAlbum album;
+    private PhotoAdapter adapter;
     private TextView tv;
     private int chooseNum = 0;
     private Button btn_sure;
@@ -40,16 +40,16 @@ public class PhotoActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.choosephoto_activity_photoalbum_gridview);
         btn_sure = (Button) findViewById(R.id.btn_sure);
-        aibum = (PhotoAibum) getIntent().getExtras().get("aibum");
+        album = (PhotoAlbum) getIntent().getExtras().get("album");
 /**获取已经选择的图片**/
-        for (int i = 0; i < aibum.getBitList().size(); i++) {
-            if (aibum.getBitList().get(i).isSelect()) {
+        for (int i = 0; i < album.getBitList().size(); i++) {
+            if (album.getBitList().get(i).isSelect()) {
                 chooseNum++;
             }
         }
         gv = (GridView) findViewById(R.id.photo_gridview);
         gl_bottom = (GridView) findViewById(R.id.gl_bottom);
-        adapter = new PhotoAdappter(this, aibum, null);
+        adapter = new PhotoAdapter(this, album, null);
         gv.setAdapter(adapter);
         gv.setOnItemClickListener(gvItemClickListener);
         btn_sure.setOnClickListener(new OnClickListener() {
@@ -73,7 +73,7 @@ public class PhotoActivity extends Activity {
         });
     }
 
-    PhotoAdappter gl_adapter = new PhotoAdappter(this, aibum, gl_arr);//
+    PhotoAdapter gl_adapter = new PhotoAdapter(this, album, gl_arr);//
 
     private void inite(PhotoItem str, boolean isSeclect) {//初始化被选中的图片的方法  将图片添加或者删除
 
@@ -108,21 +108,21 @@ public class PhotoActivity extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long id) {
-            PhotoItem gridItem = aibum.getBitList().get(position);
-            if (aibum.getBitList().get(position).isSelect()) {
-                aibum.getBitList().get(position).setSelect(false);
-                paths.remove(aibum.getBitList().get(position).getPath());
-                ids.remove(aibum.getBitList().get(position).getPhotoID() + "");
-                gl_arr.remove(aibum.getBitList().get(position));
+            PhotoItem gridItem = album.getBitList().get(position);
+            if (album.getBitList().get(position).isSelect()) {
+                album.getBitList().get(position).setSelect(false);
+                paths.remove(album.getBitList().get(position).getPath());
+                ids.remove(album.getBitList().get(position).getPhotoID() + "");
+                gl_arr.remove(album.getBitList().get(position));
                 chooseNum--;
-                inite(aibum.getBitList().get(position), aibum.getBitList().get(position).isSelect());
+                inite(album.getBitList().get(position), album.getBitList().get(position).isSelect());
             } else {
-                aibum.getBitList().get(position).setSelect(true);
-                ids.add(aibum.getBitList().get(position).getPhotoID() + "");
-                paths.add(aibum.getBitList().get(position).getPath());
-                gl_arr.add(aibum.getBitList().get(position));
+                album.getBitList().get(position).setSelect(true);
+                ids.add(album.getBitList().get(position).getPhotoID() + "");
+                paths.add(album.getBitList().get(position).getPath());
+                gl_arr.add(album.getBitList().get(position));
                 chooseNum++;
-                inite(aibum.getBitList().get(position), aibum.getBitList().get(position).isSelect());
+                inite(album.getBitList().get(position), album.getBitList().get(position).isSelect());
             }
             adapter.notifyDataSetChanged();
         }

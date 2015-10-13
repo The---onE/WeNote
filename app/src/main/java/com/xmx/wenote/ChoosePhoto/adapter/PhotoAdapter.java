@@ -12,24 +12,24 @@ import android.widget.AbsListView.LayoutParams;
 import android.widget.BaseAdapter;
 
 import com.xmx.wenote.ChoosePhoto.PhotoGridItem;
-import com.xmx.wenote.ChoosePhoto.entities.PhotoAibum;
+import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbum;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoItem;
 
-public class PhotoAdappter extends BaseAdapter {
+public class PhotoAdapter extends BaseAdapter {
     private Context context;
-    private PhotoAibum aibum;
+    private PhotoAlbum album;
     private ArrayList<PhotoItem> gl_arr;
 
-    public PhotoAdappter(Context context, PhotoAibum aibum, ArrayList<PhotoItem> gl_arr) {
+    public PhotoAdapter(Context context, PhotoAlbum album, ArrayList<PhotoItem> gl_arr) {
         this.context = context;
-        this.aibum = aibum;
+        this.album = album;
         this.gl_arr = gl_arr;
     }
 
     @Override
     public int getCount() {
         if (gl_arr == null) {
-            return aibum.getBitList().size();
+            return album.getBitList().size();
         } else {
             return gl_arr.size();
         }
@@ -39,7 +39,7 @@ public class PhotoAdappter extends BaseAdapter {
     @Override
     public PhotoItem getItem(int position) {
         if (gl_arr == null) {
-            return aibum.getBitList().get(position);
+            return album.getBitList().get(position);
         } else {
             return gl_arr.get(position);
         }
@@ -63,9 +63,9 @@ public class PhotoAdappter extends BaseAdapter {
         }
         // 通过ID 加载缩略图
         if (gl_arr == null) {
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(), aibum.getBitList().get(position).getPhotoID(), Thumbnails.MICRO_KIND, null);
+            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(), album.getBitList().get(position).getPhotoID(), Thumbnails.MICRO_KIND, null);
             item.SetBitmap(bitmap);
-            boolean flag = aibum.getBitList().get(position).isSelect();
+            boolean flag = album.getBitList().get(position).isSelect();
             item.setChecked(flag);
         } else {
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(), gl_arr.get(position).getPhotoID(), Thumbnails.MICRO_KIND, null);

@@ -4,38 +4,26 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhotoAibum implements Serializable {
-    /**
-     *
-     */
+public class PhotoAlbum implements Serializable {
     private static final long serialVersionUID = 1L;
     private String name;   //相册名字
-    private String count; //数量
+    private int count; //数量
     private int bitmap;  // 相册第一张图片
 
-    private List<PhotoItem> bitList = new ArrayList<PhotoItem>();
+    private List<PhotoItem> bitList = new ArrayList<>();
 
-    public PhotoAibum() {
-    }
-
-
-    public PhotoAibum(String name, String count, int bitmap) {
+    public PhotoAlbum() {
         super();
-        this.name = name;
-        this.count = count;
-        this.bitmap = bitmap;
+        count = 1;
     }
-
 
     public List<PhotoItem> getBitList() {
         return bitList;
     }
 
-
     public void setBitList(List<PhotoItem> bitList) {
         this.bitList = bitList;
     }
-
 
     public String getName() {
         return name;
@@ -46,11 +34,15 @@ public class PhotoAibum implements Serializable {
     }
 
     public String getCount() {
-        return count;
+        return String.valueOf(count);
     }
 
-    public void setCount(String count) {
+    public void setCount(int count) {
         this.count = count;
+    }
+
+    public void increaseCount() {
+        count++;
     }
 
     public int getBitmap() {

@@ -11,17 +11,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.xmx.wenote.ChoosePhoto.entities.PhotoAibum;
+import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbum;
 import com.xmx.wenote.R;
 
 import java.util.List;
 
-public class PhotoAibumAdapter extends BaseAdapter {
-    private List<PhotoAibum> aibumList;
+public class PhotoAlbumAdapter extends BaseAdapter {
+    private List<PhotoAlbum> aibumList;
     private Context context;
     private ViewHolder holder;
 
-    public PhotoAibumAdapter(List<PhotoAibum> list, Context context) {
+    public PhotoAlbumAdapter(List<PhotoAlbum> list, Context context) {
         this.aibumList = list;
         this.context = context;
     }
@@ -44,7 +44,7 @@ public class PhotoAibumAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.choosephoto_photoalbum_item, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.choosephoto_photoalbum_item, null);
             holder = new ViewHolder();
             holder.iv = (ImageView) convertView.findViewById(R.id.photoalbum_item_image);
             holder.tv = (TextView) convertView.findViewById(R.id.photoalbum_item_name);
