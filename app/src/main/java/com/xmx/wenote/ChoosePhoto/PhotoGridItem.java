@@ -27,7 +27,7 @@ public class PhotoGridItem extends RelativeLayout implements Checkable {
     public PhotoGridItem(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.choosephoto_photoalbum_gridview_item, this);
+        LayoutInflater.from(mContext).inflate(R.layout.cp_photo_item, this);
         mImageView = (ImageView) findViewById(R.id.photo_img_view);
         mSelect = (ImageView) findViewById(R.id.photo_select);
     }

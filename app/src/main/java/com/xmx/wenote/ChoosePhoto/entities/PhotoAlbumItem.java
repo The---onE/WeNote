@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhotoAlbum implements Serializable {
+public class PhotoAlbumItem implements Serializable {
     private static final long serialVersionUID = 1L;
     private String name;   //相册名字
     private int count; //数量
@@ -12,7 +12,7 @@ public class PhotoAlbum implements Serializable {
 
     private List<PhotoItem> bitList = new ArrayList<>();
 
-    public PhotoAlbum() {
+    public PhotoAlbumItem() {
         super();
         count = 1;
     }

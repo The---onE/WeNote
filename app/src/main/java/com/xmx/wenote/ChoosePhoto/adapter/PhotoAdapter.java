@@ -12,15 +12,15 @@ import android.widget.AbsListView.LayoutParams;
 import android.widget.BaseAdapter;
 
 import com.xmx.wenote.ChoosePhoto.PhotoGridItem;
-import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbum;
+import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbumItem;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoItem;
 
 public class PhotoAdapter extends BaseAdapter {
     private Context context;
-    private PhotoAlbum album;
+    private PhotoAlbumItem album;
     private ArrayList<PhotoItem> gl_arr;
 
-    public PhotoAdapter(Context context, PhotoAlbum album, ArrayList<PhotoItem> gl_arr) {
+    public PhotoAdapter(Context context, PhotoAlbumItem album, ArrayList<PhotoItem> gl_arr) {
         this.context = context;
         this.album = album;
         this.gl_arr = gl_arr;

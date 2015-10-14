@@ -8,14 +8,14 @@ import android.widget.ImageView;
 
 import com.xmx.wenote.R;
 
-public class ShowBigPic extends Activity {
+public class BigPhotoActivity extends Activity {
     ImageView iv_show_big_pic;
     String path;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.choosephoto_show_big_pic);
+        setContentView(R.layout.cp_big_photo_activity);
         iv_show_big_pic = (ImageView) findViewById(R.id.iv_show_big_pic);
         path = getIntent().getStringExtra("path");
         iv_show_big_pic.setImageBitmap(BitmapFactory.decodeFile(path));

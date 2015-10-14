@@ -12,7 +12,8 @@
         android:numColumns="auto_fit"
         android:columnWidth="100dp"
         android:stretchMode="columnWidth"
-        android:horizontalSpacing="2dp"
-        android:verticalSpacing="2dp" />
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="10dp"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

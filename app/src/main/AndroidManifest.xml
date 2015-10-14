@@ -18,7 +18,7 @@
         </activity>
         <activity android:name=".ChoosePhoto.PhotoActivity"/>
         <activity android:name=".ChoosePhoto.PhotoAlbumActivity"/>
-        <activity android:name=".ChoosePhoto.ShowBigPic"/>
+        <activity android:name=".ChoosePhoto.BigPhotoActivity"/>
     </application>
 
     <!--

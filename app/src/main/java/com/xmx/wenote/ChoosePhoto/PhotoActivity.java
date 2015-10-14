@@ -20,28 +20,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xmx.wenote.ChoosePhoto.adapter.PhotoAdapter;
-import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbum;
+import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbumItem;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoItem;
 import com.xmx.wenote.R;
 
 public class PhotoActivity extends Activity {
     private GridView gv, gl_bottom;
-    private PhotoAlbum album;
+    private PhotoAlbumItem album;
     private PhotoAdapter adapter;
     private TextView tv;
     private int chooseNum = 0;
     private Button btn_sure;
     private LayoutInflater inflater;
 
-    private ArrayList<PhotoItem> gl_arr = new ArrayList<PhotoItem>();
+    private ArrayList<PhotoItem> gl_arr = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.choosephoto_activity_photoalbum_gridview);
+        setContentView(R.layout.cp_photo_activity);
         btn_sure = (Button) findViewById(R.id.btn_sure);
-        album = (PhotoAlbum) getIntent().getExtras().get("album");
-/**获取已经选择的图片**/
+        album = (PhotoAlbumItem) getIntent().getExtras().get("album");
+        //获取已经选择的图片
         for (int i = 0; i < album.getBitList().size(); i++) {
             if (album.getBitList().get(i).isSelect()) {
                 chooseNum++;
@@ -66,7 +66,7 @@ public class PhotoActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 String path = gl_adapter.getItem(position).getPath();
-                Intent intent = new Intent(PhotoActivity.this, ShowBigPic.class);
+                Intent intent = new Intent(PhotoActivity.this, BigPhotoActivity.class);
                 intent.putExtra("path", path);
                 startActivity(intent);
             }
