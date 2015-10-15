@@ -25,104 +25,93 @@ import com.xmx.wenote.ChoosePhoto.entities.PhotoItem;
 import com.xmx.wenote.R;
 
 public class PhotoActivity extends Activity {
-    private GridView gv, gl_bottom;
+    private GridView chosen_gridview;
     private PhotoAlbumItem album;
     private PhotoAdapter adapter;
-    private TextView tv;
-    private int chooseNum = 0;
-    private Button btn_sure;
-    private LayoutInflater inflater;
 
-    private ArrayList<PhotoItem> gl_arr = new ArrayList<>();
+    private ArrayList<PhotoItem> chosen = new ArrayList<>();
+
+    PhotoAdapter chosen_adapter = new PhotoAdapter(this, album, chosen);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cp_photo_activity);
-        btn_sure = (Button) findViewById(R.id.btn_sure);
         album = (PhotoAlbumItem) getIntent().getExtras().get("album");
-        //获取已经选择的图片
-        for (int i = 0; i < album.getBitList().size(); i++) {
-            if (album.getBitList().get(i).isSelect()) {
-                chooseNum++;
-            }
-        }
-        gv = (GridView) findViewById(R.id.photo_gridview);
-        gl_bottom = (GridView) findViewById(R.id.gl_bottom);
+        chosen_gridview = (GridView) findViewById(R.id.chosen_gridview);
+        GridView gv = (GridView) findViewById(R.id.photo_gridview);
         adapter = new PhotoAdapter(this, album, null);
         gv.setAdapter(adapter);
         gv.setOnItemClickListener(gvItemClickListener);
-        btn_sure.setOnClickListener(new OnClickListener() {
+        findViewById(R.id.btn_sure).setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Toast.makeText(PhotoActivity.this, paths.toString(), 3000).show();
-                Log.e("info", paths.toString());
+                Toast.makeText(PhotoActivity.this, paths.toString(), Toast.LENGTH_LONG).show();
+
+                //TODO
             }
         });
-        gl_bottom.setOnItemClickListener(new OnItemClickListener() {
+        chosen_gridview.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                String path = gl_adapter.getItem(position).getPath();
+                String path = chosen_adapter.getItem(position).getPath();
                 Intent intent = new Intent(PhotoActivity.this, BigPhotoActivity.class);
                 intent.putExtra("path", path);
                 startActivity(intent);
+
+                //TODO
             }
         });
     }
 
-    PhotoAdapter gl_adapter = new PhotoAdapter(this, album, gl_arr);//
+    //
 
-    private void inite(PhotoItem str, boolean isSeclect) {//初始化被选中的图片的方法  将图片添加或者删除
-
-        if (isSeclect) {
-            btn_sure.setText("确定(" + gl_arr.size() + ")");
+    private void processChosen(boolean isSelect) {
+        int size = chosen.size();
+        Button btn_sure = (Button) findViewById(R.id.btn_sure);
+        if (isSelect) {
+            btn_sure.setText("确定(" + size + ")");
         } else {
-            btn_sure.setText("确定(" + gl_arr.size() + ")");
+            btn_sure.setText("确定(" + size + ")");
         }
-        inflater = (LayoutInflater) this
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        gl_bottom.setAdapter(gl_adapter);
-        int size = gl_arr.size();
+        chosen_gridview.setAdapter(chosen_adapter);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         float density = dm.density;
-        int allWidth = (int) (110 * size * density);
-        int itemWidth = (int) (75 * density);
+        int allWidth = (int) (90 * density * size - 10);
+        int itemWidth = (int) (80 * density);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                allWidth, LinearLayout.LayoutParams.FILL_PARENT);
-        gl_bottom.setLayoutParams(params);
-        gl_bottom.setColumnWidth(itemWidth);
-        gl_bottom.setHorizontalSpacing(10);
-        gl_bottom.setStretchMode(GridView.NO_STRETCH);
-        gl_bottom.setNumColumns(size);
+                allWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+        chosen_gridview.setLayoutParams(params);
+        chosen_gridview.setColumnWidth(itemWidth);
+        chosen_gridview.setHorizontalSpacing(10);
+        chosen_gridview.setStretchMode(GridView.STRETCH_SPACING);
+        chosen_gridview.setNumColumns(size);
 
     }
 
-    private ArrayList<String> paths = new ArrayList<String>();
-    private ArrayList<String> ids = new ArrayList<String>();
+    private ArrayList<String> paths = new ArrayList<>();
+    private ArrayList<String> ids = new ArrayList<>();
     private OnItemClickListener gvItemClickListener = new OnItemClickListener() {
 
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             PhotoItem gridItem = album.getBitList().get(position);
-            if (album.getBitList().get(position).isSelect()) {
-                album.getBitList().get(position).setSelect(false);
-                paths.remove(album.getBitList().get(position).getPath());
-                ids.remove(album.getBitList().get(position).getPhotoID() + "");
-                gl_arr.remove(album.getBitList().get(position));
-                chooseNum--;
-                inite(album.getBitList().get(position), album.getBitList().get(position).isSelect());
+            if (gridItem.isSelect()) {
+                gridItem.setSelect(false);
+                ids.remove(gridItem.getPhotoID() + "");
+                paths.remove(gridItem.getPath());
+                chosen.remove(gridItem);
+                processChosen(false);
             } else {
-                album.getBitList().get(position).setSelect(true);
-                ids.add(album.getBitList().get(position).getPhotoID() + "");
-                paths.add(album.getBitList().get(position).getPath());
-                gl_arr.add(album.getBitList().get(position));
-                chooseNum++;
-                inite(album.getBitList().get(position), album.getBitList().get(position).isSelect());
+                gridItem.setSelect(true);
+                ids.add(gridItem.getPhotoID() + "");
+                paths.add(gridItem.getPath());
+                chosen.add(gridItem);
+                processChosen(true);
             }
             adapter.notifyDataSetChanged();
         }

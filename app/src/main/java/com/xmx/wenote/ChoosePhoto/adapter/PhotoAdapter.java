@@ -11,37 +11,37 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.BaseAdapter;
 
-import com.xmx.wenote.ChoosePhoto.PhotoGridItem;
+import com.xmx.wenote.ChoosePhoto.entities.PhotoGridItem;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbumItem;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoItem;
 
 public class PhotoAdapter extends BaseAdapter {
     private Context context;
     private PhotoAlbumItem album;
-    private ArrayList<PhotoItem> gl_arr;
+    private ArrayList<PhotoItem> photos;
 
-    public PhotoAdapter(Context context, PhotoAlbumItem album, ArrayList<PhotoItem> gl_arr) {
+    public PhotoAdapter(Context context, PhotoAlbumItem album, ArrayList<PhotoItem> photos) {
         this.context = context;
         this.album = album;
-        this.gl_arr = gl_arr;
+        this.photos = photos;
     }
 
     @Override
     public int getCount() {
-        if (gl_arr == null) {
+        if (photos == null) {
             return album.getBitList().size();
         } else {
-            return gl_arr.size();
+            return photos.size();
         }
 
     }
 
     @Override
     public PhotoItem getItem(int position) {
-        if (gl_arr == null) {
+        if (photos == null) {
             return album.getBitList().get(position);
         } else {
-            return gl_arr.get(position);
+            return photos.get(position);
         }
 
     }
@@ -56,19 +56,20 @@ public class PhotoAdapter extends BaseAdapter {
         PhotoGridItem item;
         if (convertView == null) {
             item = new PhotoGridItem(context);
-            item.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT));
+            item.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         } else {
             item = (PhotoGridItem) convertView;
         }
         // 通过ID 加载缩略图
-        if (gl_arr == null) {
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(), album.getBitList().get(position).getPhotoID(), Thumbnails.MICRO_KIND, null);
+        if (photos == null) {
+            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
+                    album.getBitList().get(position).getPhotoID(), Thumbnails.MICRO_KIND, null);
             item.SetBitmap(bitmap);
             boolean flag = album.getBitList().get(position).isSelect();
             item.setChecked(flag);
         } else {
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(), gl_arr.get(position).getPhotoID(), Thumbnails.MICRO_KIND, null);
+            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
+                    photos.get(position).getPhotoID(), Thumbnails.MICRO_KIND, null);
             item.SetBitmap(bitmap);
         }
         return item;

@@ -1,4 +1,4 @@
-package com.xmx.wenote.ChoosePhoto;
+package com.xmx.wenote.ChoosePhoto.entities;
 
 import android.content.Context;
 import android.graphics.Bitmap;

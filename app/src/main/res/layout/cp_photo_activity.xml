@@ -11,7 +11,7 @@
 
         <GridView
             android:id="@+id/photo_gridview"
-            android:layout_above="@+id/chosen_gridview"
+            android:layout_above="@+id/chosen_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -23,7 +23,7 @@
             android:scrollbars="vertical" />
 
         <RelativeLayout
-            android:id="@+id/chosen_gridview"
+            android:id="@+id/chosen_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -31,12 +31,10 @@
             android:gravity="center_vertical">
 
             <HorizontalScrollView
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dip"
-                android:layout_marginRight="5dip"
-                android:layout_toStartOf="@+id/btn_sure"
                 android:layout_toLeftOf="@+id/btn_sure"
+                android:layout_toStartOf="@+id/btn_sure"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -46,7 +44,7 @@
                     android:orientation="horizontal">
 
                     <GridView
-                        android:id="@+id/gl_bottom"
+                        android:id="@+id/chosen_gridview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:scrollbars="none" />
@@ -58,12 +56,12 @@
                 android:layout_width="80dip"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="5dip"
                 android:gravity="center"
                 android:text="确定"
                 android:textColor="#f4f4f4"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
         </RelativeLayout>
     </RelativeLayout>
 </LinearLayout>
