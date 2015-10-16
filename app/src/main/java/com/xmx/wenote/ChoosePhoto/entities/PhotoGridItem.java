@@ -36,9 +36,9 @@ public class PhotoGridItem extends RelativeLayout implements Checkable {
     public void setChecked(boolean checked) {
         mCheck = checked;
         System.out.println(checked);
-//		mSelect.setImageDrawable(getResources().getDrawable(R.drawable.cb_on));
-        mSelect.setImageDrawable(checked ? getResources().getDrawable(R.drawable.cb_on) : getResources().getDrawable(R.drawable.cb_normal));
-        //mSelect.setVisibility(checked?View.VISIBLE:View.GONE);
+        mSelect.setImageDrawable(
+                checked ? getResources().getDrawable(R.drawable.cb_on)
+                        : getResources().getDrawable(R.drawable.cb_normal));
     }
 
     @Override
@@ -49,12 +49,6 @@ public class PhotoGridItem extends RelativeLayout implements Checkable {
     @Override
     public void toggle() {
         setChecked(!mCheck);
-    }
-
-    public void setImgResID(int id) {
-        if (mImageView != null) {
-            mImageView.setBackgroundResource(id);
-        }
     }
 
     public void SetBitmap(Bitmap bit) {

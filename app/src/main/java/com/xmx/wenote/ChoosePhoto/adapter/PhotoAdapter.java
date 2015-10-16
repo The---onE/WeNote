@@ -33,7 +33,6 @@ public class PhotoAdapter extends BaseAdapter {
         } else {
             return photos.size();
         }
-
     }
 
     @Override
@@ -43,7 +42,6 @@ public class PhotoAdapter extends BaseAdapter {
         } else {
             return photos.get(position);
         }
-
     }
 
     @Override
@@ -63,13 +61,13 @@ public class PhotoAdapter extends BaseAdapter {
         // 通过ID 加载缩略图
         if (photos == null) {
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
-                    album.getBitList().get(position).getPhotoID(), Thumbnails.MICRO_KIND, null);
+                    album.getBitList().get(position).getPhotoID(), Thumbnails.MINI_KIND, null);
             item.SetBitmap(bitmap);
             boolean flag = album.getBitList().get(position).isSelect();
             item.setChecked(flag);
         } else {
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
-                    photos.get(position).getPhotoID(), Thumbnails.MICRO_KIND, null);
+                    photos.get(position).getPhotoID(), Thumbnails.MINI_KIND, null);
             item.SetBitmap(bitmap);
         }
         return item;

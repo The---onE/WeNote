@@ -58,7 +58,7 @@ public class PhotoAlbumAdapter extends BaseAdapter {
         }
         //通过ID 获取缩略图
         Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
-                albumList.get(position).getBitmap(), MediaStore.Images.Thumbnails.MICRO_KIND, null);
+                albumList.get(position).getBitmap(), MediaStore.Images.Thumbnails.MINI_KIND, null);
         holder.iv.setImageBitmap(bitmap);
         holder.tv.setText(albumList.get(position).getName() + "(" + albumList.get(position).getCount() + ")");
         return convertView;
