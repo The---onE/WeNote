@@ -5,9 +5,10 @@
     android:gravity="center|center_horizontal|center_vertical"
     android:orientation="vertical">
 
-    <ImageView
+    <com.xmx.wenote.ChoosePhoto.entities.PowerImageView
         android:id="@+id/iv_show_big_pic"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:src="@drawable/a0f65657be674f877d94e00b820ffed7a_m"/>
 
 </LinearLayout>

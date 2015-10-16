@@ -18,7 +18,7 @@ public class BigPhotoActivity extends Activity {
         setContentView(R.layout.cp_big_photo_activity);
         iv_show_big_pic = (ImageView) findViewById(R.id.iv_show_big_pic);
         path = getIntent().getStringExtra("path");
-        iv_show_big_pic.setImageBitmap(BitmapFactory.decodeFile(path));
+        //iv_show_big_pic.setImageBitmap(BitmapFactory.decodeFile(path));
     }
 
     @Override
