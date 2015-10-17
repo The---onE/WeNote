@@ -18,12 +18,15 @@ public class BigPhotoActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cp_big_photo_activity);
-        iv_show_big_pic = (GifView) findViewById(R.id.iv_show_big_pic);
-        iv_show_big_pic.setMovieResource(R.drawable.gif);
-        iv_show_big_iv = (ImageView) findViewById(R.id.iv_show_big_iv);
-        iv_show_big_iv.setImageResource(R.drawable.ic_launcher);
+
         path = getIntent().getStringExtra("path");
         //iv_show_big_pic.setImageBitmap(BitmapFactory.decodeFile(path));
+
+        iv_show_big_pic = (GifView) findViewById(R.id.iv_show_big_pic);
+        iv_show_big_pic.setMovieResource(path);
+
+        //iv_show_big_iv = (ImageView) findViewById(R.id.iv_show_big_iv);
+        //iv_show_big_iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
     }
 
     @Override

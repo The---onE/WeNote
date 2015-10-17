@@ -12,6 +12,9 @@ import android.widget.ImageView;
 
 import com.xmx.wenote.R;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 public class GifView extends ImageView {
 
     private static final int DEFAULT_MOVIE_DURATION = 1000;
@@ -42,8 +45,7 @@ public class GifView extends ImageView {
     }
 
     @SuppressLint("NewApi")
-    private void setViewAttributes(Context context, AttributeSet attrs,
-                                   int defStyle) {
+    private void setViewAttributes(Context context, AttributeSet attrs, int defStyle) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
@@ -62,12 +64,14 @@ public class GifView extends ImageView {
     /**
      * 设置gif图资源
      *
-     * @param movieResId
      */
-    public void setMovieResource(int movieResId) {
-        this.mMovieResourceId = movieResId;
-        mMovie = Movie.decodeStream(getResources().openRawResource(
-                mMovieResourceId));
+    public void setMovieResource(String add) {
+        this.mMovieResourceId = 1;
+        try {
+            mMovie = Movie.decodeStream(new FileInputStream(add));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         requestLayout();
     }
 
