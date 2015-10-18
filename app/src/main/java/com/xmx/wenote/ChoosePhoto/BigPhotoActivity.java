@@ -2,16 +2,18 @@ package com.xmx.wenote.ChoosePhoto;
 
 import android.app.Activity;
 import android.graphics.BitmapFactory;
+import android.graphics.Movie;
 import android.os.Bundle;
 import android.view.MotionEvent;
-import android.widget.ImageView;
 
-import com.xmx.wenote.ChoosePhoto.entities.GifView;
+import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 import com.xmx.wenote.R;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 public class BigPhotoActivity extends Activity {
-    GifView iv_show_big_pic;
-    ImageView iv_show_big_iv;
+    GifImageView gif_view;
     String path;
 
     @Override
@@ -20,13 +22,21 @@ public class BigPhotoActivity extends Activity {
         setContentView(R.layout.cp_big_photo_activity);
 
         path = getIntent().getStringExtra("path");
-        //iv_show_big_pic.setImageBitmap(BitmapFactory.decodeFile(path));
+        Movie movie = null;
+        try {
+            movie = Movie.decodeStream(new FileInputStream(path));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        iv_show_big_pic = (GifView) findViewById(R.id.iv_show_big_pic);
-        iv_show_big_pic.setMovieResource(path);
+        gif_view = (GifImageView) findViewById(R.id.gif_view);
+        if (movie != null) {
+            gif_view.setMovie(movie);
+        } else {
+            gif_view.setImageBitmap(BitmapFactory.decodeFile(path));
+        }
 
-        //iv_show_big_iv = (ImageView) findViewById(R.id.iv_show_big_iv);
-        //iv_show_big_iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+
     }
 
     @Override
