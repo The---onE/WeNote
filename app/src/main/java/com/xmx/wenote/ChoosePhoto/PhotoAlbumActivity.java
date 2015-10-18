@@ -45,14 +45,24 @@ public class PhotoAlbumActivity extends Activity {
     }
 
     //相册点击事件
+    static final int CHOOSE_IMAGE = 1;
     OnItemClickListener albumClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent intent = new Intent(PhotoAlbumActivity.this, PhotoActivity.class);
             intent.putExtra("album", albumList.get(position));
-            startActivity(intent);
+            startActivityForResult(intent, CHOOSE_IMAGE);
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            setResult(RESULT_OK, data);
+            finish();
+        }
+    }
 
     //按相册获取图片信息
     private List<PhotoAlbumItem> getPhotoAlbum() {

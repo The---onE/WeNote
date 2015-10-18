@@ -1,11 +1,7 @@
 package com.xmx.wenote;
 
-import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -19,9 +15,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-
-import com.xmx.wenote.ChoosePhoto.PhotoActivity;
-import com.xmx.wenote.ChoosePhoto.PhotoAlbumActivity;
 
 import java.util.ArrayList;
 
@@ -60,6 +53,7 @@ public class MainActivity extends FragmentActivity {
 
     private ViewPager pager;
     private ImageView cursor;
+    ArrayList<Fragment> fragments;
     private int bmpW;
     private int offset;
     private int currIndex;
@@ -106,19 +100,18 @@ public class MainActivity extends FragmentActivity {
     }
 
     public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
-        ArrayList<Fragment> views;
         public MyFragmentPagerAdapter(FragmentManager fm,ArrayList<Fragment> list){
             super(fm);
-            this.views = list;
+            fragments = list;
         }
         @Override
         public int getCount() {
-            return views.size();
+            return fragments.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return views.get(position);
+            return fragments.get(position);
         }
     }
 
@@ -165,32 +158,6 @@ public class MainActivity extends FragmentActivity {
         }
         @Override
         public void onPageScrollStateChanged(int state) {
-        }
-    }
-
-    static final int RESULT_LOAD_IMAGE = 1;
-    public void onChooseClick(View view) {
-        //Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        Intent i = new Intent(this, PhotoAlbumActivity.class);
-        startActivity(i);
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-            ImageView imageView = (ImageView)findViewById(R.id.testPhoto);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
     }
 }

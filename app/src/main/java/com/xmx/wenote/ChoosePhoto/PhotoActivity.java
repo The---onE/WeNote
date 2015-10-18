@@ -3,12 +3,9 @@ package com.xmx.wenote.ChoosePhoto;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -16,8 +13,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.xmx.wenote.ChoosePhoto.adapter.PhotoAdapter;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbumItem;
@@ -30,6 +25,9 @@ public class PhotoActivity extends Activity {
     private PhotoAdapter adapter;
 
     private ArrayList<PhotoItem> chosen = new ArrayList<>();
+
+    private ArrayList<String> paths = new ArrayList<>();
+    private ArrayList<String> ids = new ArrayList<>();
 
     PhotoAdapter chosen_adapter = new PhotoAdapter(this, album, chosen);
 
@@ -47,9 +45,10 @@ public class PhotoActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                Toast.makeText(PhotoActivity.this, paths.toString(), Toast.LENGTH_LONG).show();
-
-                //TODO
+                Intent i = new Intent(PhotoActivity.this, PhotoAlbumActivity.class);
+                i.putExtra("paths", paths);
+                setResult(RESULT_OK, i);
+                finish();
             }
         });
         chosen_gridview.setOnItemClickListener(new OnItemClickListener() {
@@ -93,8 +92,6 @@ public class PhotoActivity extends Activity {
 
     }
 
-    private ArrayList<String> paths = new ArrayList<>();
-    private ArrayList<String> ids = new ArrayList<>();
     private OnItemClickListener gvItemClickListener = new OnItemClickListener() {
 
         @Override
