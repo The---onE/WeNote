@@ -22,21 +22,9 @@ public class BigPhotoActivity extends Activity {
         setContentView(R.layout.cp_big_photo_activity);
 
         path = getIntent().getStringExtra("path");
-        Movie movie = null;
-        try {
-            movie = Movie.decodeStream(new FileInputStream(path));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
         gif_view = (GifImageView) findViewById(R.id.gif_view);
-        if (movie != null) {
-            gif_view.setMovie(movie);
-        } else {
-            gif_view.setImageBitmap(BitmapFactory.decodeFile(path));
-        }
-
-
+        gif_view.setImagePath(path);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.xmx.wenote.ChoosePhoto.entities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Movie;
 import android.os.Build;
@@ -10,6 +11,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.xmx.wenote.R;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class GifImageView extends ImageView {
 
@@ -39,9 +43,20 @@ public class GifImageView extends ImageView {
         }
     }
 
-    public void setMovie(Movie movie) {
-        this.mMovie = movie;
-        requestLayout();
+    public void setImagePath(String path) {
+        Movie movie = null;
+        try {
+            movie = Movie.decodeStream(new FileInputStream(path));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (movie != null) {
+            this.mMovie = movie;
+            requestLayout();
+        } else {
+            setImageBitmap(BitmapFactory.decodeFile(path));
+        }
     }
 
     @Override
