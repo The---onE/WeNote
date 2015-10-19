@@ -1,15 +1,19 @@
 package com.xmx.wenote;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.xmx.wenote.ChoosePhoto.PhotoAlbumActivity;
 
@@ -19,6 +23,9 @@ import java.util.ArrayList;
  * Created by The_onE on 2015/10/11.
  */
 public class NoteFragment extends Fragment {
+    ArrayList<LinearLayout> layouts = new ArrayList<>();
+    ArrayList<ImageView> images = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,7 +53,37 @@ public class NoteFragment extends Fragment {
 
         if (requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
             ArrayList<String> paths = data.getStringArrayListExtra("paths");
-            Toast.makeText(getActivity(), paths.toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity(), paths.toString(), Toast.LENGTH_LONG).show();
+
+            LinearLayout parent = (LinearLayout)getActivity().findViewById(R.id.note_layout);
+            for (LinearLayout l:layouts) {
+                parent.removeView(l);
+            }
+            layouts.clear();
+            images.clear();
+
+            WindowManager wm = (WindowManager) getContext()
+                    .getSystemService(Context.WINDOW_SERVICE);
+            int width = wm.getDefaultDisplay().getWidth();
+
+            LinearLayout l = new LinearLayout(getContext());
+            for (int i=0; i<paths.size(); ++i) {
+                String path = paths.get(i);
+                if (i%4 == 0) {
+                    l = new LinearLayout(getContext());
+                    l.setOrientation(LinearLayout.HORIZONTAL);
+                    l.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                    parent.addView(l);
+                    layouts.add(l);
+                }
+                ImageView iv = new ImageView(getActivity());
+                iv.setImageBitmap(BitmapFactory.decodeFile(path));
+                iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
+                iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                l.addView(iv);
+                images.add(iv);
+            }
         }
     }
 

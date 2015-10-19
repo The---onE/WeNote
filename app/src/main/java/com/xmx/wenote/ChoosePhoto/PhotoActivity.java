@@ -45,10 +45,12 @@ public class PhotoActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(PhotoActivity.this, PhotoAlbumActivity.class);
-                i.putExtra("paths", paths);
-                setResult(RESULT_OK, i);
-                finish();
+                if (!paths.isEmpty()) {
+                    Intent i = new Intent(PhotoActivity.this, PhotoAlbumActivity.class);
+                    i.putExtra("paths", paths);
+                    setResult(RESULT_OK, i);
+                    finish();
+                }
             }
         });
         chosen_gridview.setOnItemClickListener(new OnItemClickListener() {
