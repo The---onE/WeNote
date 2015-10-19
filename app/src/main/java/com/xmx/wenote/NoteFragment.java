@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.xmx.wenote.ChoosePhoto.PhotoAlbumActivity;
+import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 
 import java.util.ArrayList;
 
@@ -24,7 +26,7 @@ import java.util.ArrayList;
  */
 public class NoteFragment extends Fragment {
     ArrayList<LinearLayout> layouts = new ArrayList<>();
-    ArrayList<ImageView> images = new ArrayList<>();
+    ArrayList<GifImageView> images = new ArrayList<>();
 
     @Nullable
     @Override
@@ -74,11 +76,12 @@ public class NoteFragment extends Fragment {
                     l.setOrientation(LinearLayout.HORIZONTAL);
                     l.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT));
+                    l.setVerticalGravity(Gravity.CENTER);
                     parent.addView(l);
                     layouts.add(l);
                 }
-                ImageView iv = new ImageView(getActivity());
-                iv.setImageBitmap(BitmapFactory.decodeFile(path));
+                GifImageView iv = new GifImageView(getActivity());
+                iv.setImagePath(path);
                 iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
                 iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 l.addView(iv);
