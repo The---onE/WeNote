@@ -3,7 +3,6 @@ package com.xmx.wenote;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 public class NoteFragment extends Fragment {
     ArrayList<LinearLayout> layouts = new ArrayList<>();
     ArrayList<GifImageView> images = new ArrayList<>();
+    ArrayList<String> paths;
 
     @Nullable
     @Override
@@ -42,7 +42,6 @@ public class NoteFragment extends Fragment {
         choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 Intent i = new Intent(getActivity(), PhotoAlbumActivity.class);
                 startActivityForResult(i, CHOOSE_IMAGE);
             }
@@ -54,8 +53,7 @@ public class NoteFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            ArrayList<String> paths = data.getStringArrayListExtra("paths");
-            //Toast.makeText(getActivity(), paths.toString(), Toast.LENGTH_LONG).show();
+            paths = data.getStringArrayListExtra("paths");
 
             LinearLayout parent = (LinearLayout)getActivity().findViewById(R.id.note_layout);
             for (LinearLayout l:layouts) {
@@ -64,8 +62,7 @@ public class NoteFragment extends Fragment {
             layouts.clear();
             images.clear();
 
-            WindowManager wm = (WindowManager) getContext()
-                    .getSystemService(Context.WINDOW_SERVICE);
+            WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
             int width = wm.getDefaultDisplay().getWidth();
 
             LinearLayout l = new LinearLayout(getContext());
