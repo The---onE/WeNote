@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.xmx.wenote.ChoosePhoto.PhotoAlbumActivity;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
@@ -26,7 +27,8 @@ import java.util.ArrayList;
 public class NoteFragment extends Fragment {
     ArrayList<LinearLayout> layouts = new ArrayList<>();
     ArrayList<GifImageView> images = new ArrayList<>();
-    ArrayList<String> paths;
+    ArrayList<String> paths = new ArrayList<>();
+    String sqlFile = android.os.Environment.getExternalStorageDirectory() + "/WeNote/note.db";
 
     @Nullable
     @Override
@@ -38,12 +40,25 @@ public class NoteFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         Button choose = (Button) getActivity().findViewById(R.id.choose);
         choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), PhotoAlbumActivity.class);
                 startActivityForResult(i, CHOOSE_IMAGE);
+            }
+        });
+
+        Button note = (Button) getActivity().findViewById(R.id.note);
+        note.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!paths.isEmpty()) {
+                    Toast.makeText(getContext(), paths.toString(), Toast.LENGTH_LONG).show();
+                    //TODO
+                    Toast.makeText(getContext(), sqlFile, Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

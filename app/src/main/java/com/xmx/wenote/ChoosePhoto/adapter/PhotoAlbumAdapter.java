@@ -53,14 +53,12 @@ public class PhotoAlbumAdapter extends BaseAdapter {
             holder.iv = (ImageView) convertView.findViewById(R.id.photoalbum_item_image);
             holder.tv = (TextView) convertView.findViewById(R.id.photoalbum_item_name);
             convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
+            //通过ID 获取缩略图
+            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
+                    albumList.get(position).getBitmap(), MediaStore.Images.Thumbnails.MINI_KIND, null);
+            holder.iv.setImageBitmap(bitmap);
+            holder.tv.setText(albumList.get(position).getName() + "(" + albumList.get(position).getCount() + ")");
         }
-        //通过ID 获取缩略图
-        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
-                albumList.get(position).getBitmap(), MediaStore.Images.Thumbnails.MINI_KIND, null);
-        holder.iv.setImageBitmap(bitmap);
-        holder.tv.setText(albumList.get(position).getName() + "(" + albumList.get(position).getCount() + ")");
         return convertView;
     }
 

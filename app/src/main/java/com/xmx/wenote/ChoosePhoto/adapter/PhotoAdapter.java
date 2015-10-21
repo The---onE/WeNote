@@ -55,20 +55,23 @@ public class PhotoAdapter extends BaseAdapter {
         if (convertView == null) {
             item = new PhotoGridItem(context);
             item.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            // 通过ID 加载缩略图
+            if (photos == null) {
+                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
+                        album.getBitList().get(position).getPhotoID(), Thumbnails.MINI_KIND, null);
+                item.SetBitmap(bitmap);
+            } else {
+                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
+                        photos.get(position).getPhotoID(), Thumbnails.MINI_KIND, null);
+                item.SetBitmap(bitmap);
+            }
         } else {
             item = (PhotoGridItem) convertView;
         }
-        // 通过ID 加载缩略图
+
         if (photos == null) {
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
-                    album.getBitList().get(position).getPhotoID(), Thumbnails.MINI_KIND, null);
-            item.SetBitmap(bitmap);
             boolean flag = album.getBitList().get(position).isSelect();
             item.setChecked(flag);
-        } else {
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
-                    photos.get(position).getPhotoID(), Thumbnails.MINI_KIND, null);
-            item.SetBitmap(bitmap);
         }
         return item;
     }
