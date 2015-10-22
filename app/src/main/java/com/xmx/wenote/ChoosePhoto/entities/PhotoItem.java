@@ -50,10 +50,8 @@ public class PhotoItem extends RelativeLayout implements Checkable {
         setChecked(!mCheck);
     }
 
-    public void SetBitmap(Bitmap bit) {
-        if (mImageView != null) {
-            mImageView.setImageBitmap(bit);
-        }
+    public void setPath(String path) {
+        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(path, mImageView);
     }
 
 }

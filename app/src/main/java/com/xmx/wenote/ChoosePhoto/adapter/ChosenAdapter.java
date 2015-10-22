@@ -4,13 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
+import com.xmx.wenote.ChoosePhoto.entities.ImageLoader;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoInf;
 import com.xmx.wenote.R;
 
@@ -41,7 +38,7 @@ public class ChosenAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        GifImageView giv;
+        ImageView iv;
     }
 
     @Override
@@ -50,12 +47,12 @@ public class ChosenAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.cp_chosen_item, null);
             holder = new ViewHolder();
-            holder.giv = (GifImageView) convertView.findViewById(R.id.chosen_item_image);
+            holder.iv = (ImageView) convertView.findViewById(R.id.chosen_item_image);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.giv.setImagePath(photos.get(position).getPath());
+        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(photos.get(position).getPath(), holder.iv);
         return convertView;
     }
 }

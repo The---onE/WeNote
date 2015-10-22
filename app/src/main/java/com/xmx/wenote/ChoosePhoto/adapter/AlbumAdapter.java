@@ -1,8 +1,6 @@
 package com.xmx.wenote.ChoosePhoto.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xmx.wenote.ChoosePhoto.entities.AlbumItem;
+import com.xmx.wenote.ChoosePhoto.entities.ImageLoader;
 import com.xmx.wenote.R;
 
 import java.util.List;
@@ -56,10 +55,7 @@ public class AlbumAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        //通过ID 获取缩略图
-        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
-                albumList.get(position).getBitmap(), MediaStore.Images.Thumbnails.MINI_KIND, null);
-        holder.iv.setImageBitmap(bitmap);
+        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(albumList.get(position).getBitList().get(0).getPath(), holder.iv);
         holder.tv.setText(albumList.get(position).getName() + "(" + albumList.get(position).getCount() + ")");
         return convertView;
     }

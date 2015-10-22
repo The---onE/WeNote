@@ -103,13 +103,12 @@ public class PhotoActivity extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         float density = dm.density;
-        int allWidth = (int) (90 * density * size - 10);
-        int itemWidth = (int) (80 * density);
+        int allWidth = (int) ((100 + 5) * density * size - 10);
+        int itemWidth = (int) (100 * density);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 allWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
         chosen_gridview.setLayoutParams(params);
         chosen_gridview.setColumnWidth(itemWidth);
         chosen_gridview.setNumColumns(size);
-
     }
 }
