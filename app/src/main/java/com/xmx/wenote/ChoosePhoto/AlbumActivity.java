@@ -15,14 +15,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
-import com.xmx.wenote.ChoosePhoto.adapter.PhotoAlbumAdapter;
-import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbumItem;
-import com.xmx.wenote.ChoosePhoto.entities.PhotoItem;
+import com.xmx.wenote.ChoosePhoto.adapter.AlbumAdapter;
+import com.xmx.wenote.ChoosePhoto.entities.AlbumItem;
+import com.xmx.wenote.ChoosePhoto.entities.PhotoInf;
 import com.xmx.wenote.R;
 
-public class PhotoAlbumActivity extends Activity {
+public class AlbumActivity extends Activity {
     private GridView albumGV;
-    private List<PhotoAlbumItem> albumList;
+    private List<AlbumItem> albumList;
 
     //设置获取图片的字段信息
     private static final String[] STORE_IMAGES = {
@@ -40,7 +40,7 @@ public class PhotoAlbumActivity extends Activity {
         setContentView(R.layout.cp_photoalbum_activity);
         albumGV = (GridView) findViewById(R.id.album_gridview);
         albumList = getPhotoAlbum();
-        albumGV.setAdapter(new PhotoAlbumAdapter(albumList, this));
+        albumGV.setAdapter(new AlbumAdapter(albumList, this));
         albumGV.setOnItemClickListener(albumClickListener);
     }
 
@@ -49,7 +49,7 @@ public class PhotoAlbumActivity extends Activity {
     OnItemClickListener albumClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(PhotoAlbumActivity.this, PhotoActivity.class);
+            Intent intent = new Intent(AlbumActivity.this, PhotoActivity.class);
             intent.putExtra("album", albumList.get(position));
             startActivityForResult(intent, CHOOSE_IMAGE);
         }
@@ -65,13 +65,13 @@ public class PhotoAlbumActivity extends Activity {
     }
 
     //按相册获取图片信息
-    private List<PhotoAlbumItem> getPhotoAlbum() {
-        List<PhotoAlbumItem> albumList = new ArrayList<>();
+    private List<AlbumItem> getPhotoAlbum() {
+        List<AlbumItem> albumList = new ArrayList<>();
         Cursor cursor = MediaStore.Images.Media.query(getContentResolver(),
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES,
                 null, MediaStore.Images.Media.DATE_MODIFIED);
-        Map<String, PhotoAlbumItem> countMap = new LinkedHashMap<>();
-        PhotoAlbumItem pa;
+        Map<String, AlbumItem> countMap = new LinkedHashMap<>();
+        AlbumItem pa;
         cursor.moveToLast();
         cursor.moveToNext();
         while (cursor.moveToPrevious()) {
@@ -80,15 +80,15 @@ public class PhotoAlbumActivity extends Activity {
             String dir_id = cursor.getString(4);
             String dir = cursor.getString(5);
             if (!countMap.containsKey(dir_id)) {
-                pa = new PhotoAlbumItem();
+                pa = new AlbumItem();
                 pa.setName(dir);
                 pa.setBitmap(Integer.parseInt(id));
-                pa.getBitList().add(new PhotoItem(Integer.valueOf(id), path));
+                pa.getBitList().add(new PhotoInf(Integer.valueOf(id), path));
                 countMap.put(dir_id, pa);
             } else {
                 pa = countMap.get(dir_id);
                 pa.increaseCount();
-                pa.getBitList().add(new PhotoItem(Integer.valueOf(id), path));
+                pa.getBitList().add(new PhotoInf(Integer.valueOf(id), path));
             }
         }
         cursor.close();

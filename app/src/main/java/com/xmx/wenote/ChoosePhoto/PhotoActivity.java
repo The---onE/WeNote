@@ -15,16 +15,16 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.xmx.wenote.ChoosePhoto.adapter.PhotoAdapter;
-import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbumItem;
-import com.xmx.wenote.ChoosePhoto.entities.PhotoItem;
+import com.xmx.wenote.ChoosePhoto.entities.AlbumItem;
+import com.xmx.wenote.ChoosePhoto.entities.PhotoInf;
 import com.xmx.wenote.R;
 
 public class PhotoActivity extends Activity {
     private GridView chosen_gridview;
-    private PhotoAlbumItem album;
+    private AlbumItem album;
     private PhotoAdapter adapter;
 
-    private ArrayList<PhotoItem> chosen = new ArrayList<>();
+    private ArrayList<PhotoInf> chosen = new ArrayList<>();
 
     private ArrayList<String> paths = new ArrayList<>();
     private ArrayList<String> ids = new ArrayList<>();
@@ -35,7 +35,7 @@ public class PhotoActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cp_photo_activity);
-        album = (PhotoAlbumItem) getIntent().getExtras().get("album");
+        album = (AlbumItem) getIntent().getExtras().get("album");
         chosen_gridview = (GridView) findViewById(R.id.chosen_gridview);
         GridView gv = (GridView) findViewById(R.id.photo_gridview);
         adapter = new PhotoAdapter(this, album, null);
@@ -46,7 +46,7 @@ public class PhotoActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (!paths.isEmpty()) {
-                    Intent i = new Intent(PhotoActivity.this, PhotoAlbumActivity.class);
+                    Intent i = new Intent(PhotoActivity.this, AlbumActivity.class);
                     i.putExtra("paths", paths);
                     setResult(RESULT_OK, i);
                     finish();
@@ -88,8 +88,6 @@ public class PhotoActivity extends Activity {
                 allWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
         chosen_gridview.setLayoutParams(params);
         chosen_gridview.setColumnWidth(itemWidth);
-        chosen_gridview.setHorizontalSpacing(10);
-        chosen_gridview.setStretchMode(GridView.STRETCH_SPACING);
         chosen_gridview.setNumColumns(size);
 
     }
@@ -98,7 +96,7 @@ public class PhotoActivity extends Activity {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            PhotoItem gridItem = album.getBitList().get(position);
+            PhotoInf gridItem = album.getBitList().get(position);
             if (gridItem.isSelect()) {
                 gridItem.setSelect(false);
                 ids.remove(gridItem.getPhotoID() + "");

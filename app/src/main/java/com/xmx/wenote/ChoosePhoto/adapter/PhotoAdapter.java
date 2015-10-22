@@ -1,7 +1,5 @@
 package com.xmx.wenote.ChoosePhoto.adapter;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
@@ -11,16 +9,18 @@ import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.BaseAdapter;
 
-import com.xmx.wenote.ChoosePhoto.entities.PhotoGridItem;
-import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbumItem;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoItem;
+import com.xmx.wenote.ChoosePhoto.entities.AlbumItem;
+import com.xmx.wenote.ChoosePhoto.entities.PhotoInf;
+
+import java.util.ArrayList;
 
 public class PhotoAdapter extends BaseAdapter {
     private Context context;
-    private PhotoAlbumItem album;
-    private ArrayList<PhotoItem> photos;
+    private AlbumItem album;
+    private ArrayList<PhotoInf> photos;
 
-    public PhotoAdapter(Context context, PhotoAlbumItem album, ArrayList<PhotoItem> photos) {
+    public PhotoAdapter(Context context, AlbumItem album, ArrayList<PhotoInf> photos) {
         this.context = context;
         this.album = album;
         this.photos = photos;
@@ -36,7 +36,7 @@ public class PhotoAdapter extends BaseAdapter {
     }
 
     @Override
-    public PhotoItem getItem(int position) {
+    public PhotoInf getItem(int position) {
         if (photos == null) {
             return album.getBitList().get(position);
         } else {
@@ -51,12 +51,12 @@ public class PhotoAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        PhotoGridItem item;
+        PhotoItem item;
         if (convertView == null) {
-            item = new PhotoGridItem(context);
+            item = new PhotoItem(context);
             item.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         } else {
-            item = (PhotoGridItem) convertView;
+            item = (PhotoItem) convertView;
         }
         // 通过ID 加载缩略图
         if (photos == null) {

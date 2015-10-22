@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.xmx.wenote.ChoosePhoto.PhotoAlbumActivity;
+import com.xmx.wenote.ChoosePhoto.AlbumActivity;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class NoteFragment extends Fragment {
         choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), PhotoAlbumActivity.class);
+                Intent i = new Intent(getActivity(), AlbumActivity.class);
                 startActivityForResult(i, CHOOSE_IMAGE);
             }
         });

@@ -10,16 +10,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.xmx.wenote.ChoosePhoto.entities.PhotoAlbumItem;
+import com.xmx.wenote.ChoosePhoto.entities.AlbumItem;
 import com.xmx.wenote.R;
 
 import java.util.List;
 
-public class PhotoAlbumAdapter extends BaseAdapter {
-    private List<PhotoAlbumItem> albumList;
+public class AlbumAdapter extends BaseAdapter {
+    private List<AlbumItem> albumList;
     private Context context;
 
-    public PhotoAlbumAdapter(List<PhotoAlbumItem> list, Context context) {
+    public AlbumAdapter(List<AlbumItem> list, Context context) {
         this.albumList = list;
         this.context = context;
     }

@@ -4,20 +4,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhotoAlbumItem implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class AlbumItem implements Serializable {
     private String name;   //相册名字
     private int count; //数量
     private int bitmap;  // 相册第一张图片
 
-    private List<PhotoItem> bitList = new ArrayList<>();
+    private List<PhotoInf> bitList = new ArrayList<>();
 
-    public PhotoAlbumItem() {
+    public AlbumItem() {
         super();
         count = 1;
     }
 
-    public List<PhotoItem> getBitList() {
+    public List<PhotoInf> getBitList() {
         return bitList;
     }
 

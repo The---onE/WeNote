@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ChoosePhoto.PhotoActivity"/>
-        <activity android:name=".ChoosePhoto.PhotoAlbumActivity"/>
+        <activity android:name=".ChoosePhoto.AlbumActivity"/>
         <activity android:name=".ChoosePhoto.BigPhotoActivity"/>
     </application>
 
