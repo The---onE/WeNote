@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 
+import com.xmx.wenote.ChoosePhoto.adapter.ChosenAdapter;
 import com.xmx.wenote.ChoosePhoto.adapter.PhotoAdapter;
 import com.xmx.wenote.ChoosePhoto.entities.AlbumItem;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoInf;
@@ -23,24 +24,60 @@ public class PhotoActivity extends Activity {
     private GridView chosen_gridview;
     private AlbumItem album;
     private PhotoAdapter adapter;
+    private ChosenAdapter chosen_adapter;
 
     private ArrayList<PhotoInf> chosen = new ArrayList<>();
 
     private ArrayList<String> paths = new ArrayList<>();
     private ArrayList<String> ids = new ArrayList<>();
 
-    PhotoAdapter chosen_adapter = new PhotoAdapter(this, album, chosen);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cp_photo_activity);
+
         album = (AlbumItem) getIntent().getExtras().get("album");
-        chosen_gridview = (GridView) findViewById(R.id.chosen_gridview);
+
         GridView gv = (GridView) findViewById(R.id.photo_gridview);
-        adapter = new PhotoAdapter(this, album, null);
+        adapter = new PhotoAdapter(this, album);
         gv.setAdapter(adapter);
-        gv.setOnItemClickListener(gvItemClickListener);
+        gv.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PhotoInf gridItem = album.getBitList().get(position);
+                if (gridItem.isSelect()) {
+                    gridItem.setSelect(false);
+                    ids.remove(gridItem.getPhotoID() + "");
+                    paths.remove(gridItem.getPath());
+                    chosen.remove(gridItem);
+                    processChosen(false);
+                } else {
+                    gridItem.setSelect(true);
+                    ids.add(gridItem.getPhotoID() + "");
+                    paths.add(gridItem.getPath());
+                    chosen.add(gridItem);
+                    processChosen(true);
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        chosen_gridview = (GridView) findViewById(R.id.chosen_gridview);
+        chosen_adapter = new ChosenAdapter(this, chosen);
+        chosen_gridview.setAdapter(chosen_adapter);
+        chosen_gridview.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                String path = chosen_adapter.getItem(position).getPath();
+                Intent intent = new Intent(PhotoActivity.this, BigPhotoActivity.class);
+                intent.putExtra("path", path);
+                startActivity(intent);
+
+                //TODO
+            }
+        });
+
         findViewById(R.id.btn_sure).setOnClickListener(new OnClickListener() {
 
             @Override
@@ -53,22 +90,7 @@ public class PhotoActivity extends Activity {
                 }
             }
         });
-        chosen_gridview.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                String path = chosen_adapter.getItem(position).getPath();
-                Intent intent = new Intent(PhotoActivity.this, BigPhotoActivity.class);
-                intent.putExtra("path", path);
-                startActivity(intent);
-
-                //TODO
-            }
-        });
     }
-
-    //
 
     private void processChosen(boolean isSelect) {
         int size = chosen.size();
@@ -78,7 +100,6 @@ public class PhotoActivity extends Activity {
         } else {
             btn_sure.setText("确定(" + size + ")");
         }
-        chosen_gridview.setAdapter(chosen_adapter);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         float density = dm.density;
@@ -91,26 +112,4 @@ public class PhotoActivity extends Activity {
         chosen_gridview.setNumColumns(size);
 
     }
-
-    private OnItemClickListener gvItemClickListener = new OnItemClickListener() {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            PhotoInf gridItem = album.getBitList().get(position);
-            if (gridItem.isSelect()) {
-                gridItem.setSelect(false);
-                ids.remove(gridItem.getPhotoID() + "");
-                paths.remove(gridItem.getPath());
-                chosen.remove(gridItem);
-                processChosen(false);
-            } else {
-                gridItem.setSelect(true);
-                ids.add(gridItem.getPhotoID() + "");
-                paths.add(gridItem.getPath());
-                chosen.add(gridItem);
-                processChosen(true);
-            }
-            adapter.notifyDataSetChanged();
-        }
-    };
 }

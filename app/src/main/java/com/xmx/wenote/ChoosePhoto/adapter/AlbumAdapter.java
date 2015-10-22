@@ -48,10 +48,10 @@ public class AlbumAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.cp_photoalbum_item, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.cp_album_item, null);
             holder = new ViewHolder();
-            holder.iv = (ImageView) convertView.findViewById(R.id.photoalbum_item_image);
-            holder.tv = (TextView) convertView.findViewById(R.id.photoalbum_item_name);
+            holder.iv = (ImageView) convertView.findViewById(R.id.album_item_image);
+            holder.tv = (TextView) convertView.findViewById(R.id.album_item_name);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

@@ -20,28 +20,19 @@ public class PhotoAdapter extends BaseAdapter {
     private AlbumItem album;
     private ArrayList<PhotoInf> photos;
 
-    public PhotoAdapter(Context context, AlbumItem album, ArrayList<PhotoInf> photos) {
+    public PhotoAdapter(Context context, AlbumItem album) {
         this.context = context;
         this.album = album;
-        this.photos = photos;
     }
 
     @Override
     public int getCount() {
-        if (photos == null) {
-            return album.getBitList().size();
-        } else {
-            return photos.size();
-        }
+        return album.getBitList().size();
     }
 
     @Override
     public PhotoInf getItem(int position) {
-        if (photos == null) {
-            return album.getBitList().get(position);
-        } else {
-            return photos.get(position);
-        }
+        return album.getBitList().get(position);
     }
 
     @Override
@@ -59,17 +50,11 @@ public class PhotoAdapter extends BaseAdapter {
             item = (PhotoItem) convertView;
         }
         // 通过ID 加载缩略图
-        if (photos == null) {
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
-                    album.getBitList().get(position).getPhotoID(), Thumbnails.MINI_KIND, null);
-            item.SetBitmap(bitmap);
-            boolean flag = album.getBitList().get(position).isSelect();
-            item.setChecked(flag);
-        } else {
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
-                    photos.get(position).getPhotoID(), Thumbnails.MINI_KIND, null);
-            item.SetBitmap(bitmap);
-        }
+        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.getContentResolver(),
+                album.getBitList().get(position).getPhotoID(), Thumbnails.MINI_KIND, null);
+        item.SetBitmap(bitmap);
+        boolean flag = album.getBitList().get(position).isSelect();
+        item.setChecked(flag);
         return item;
     }
 }

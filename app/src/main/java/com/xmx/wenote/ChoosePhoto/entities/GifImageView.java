@@ -67,7 +67,7 @@ public class GifImageView extends ImageView {
             int movieHeight = mMovie.height();
             int defaultWidth = MeasureSpec.getSize(widthMeasureSpec);
             float suitableScale = 2.5f;
-            int width = 1;
+            int width;
 
             int mode = MeasureSpec.getMode(widthMeasureSpec);
             switch (mode) {
@@ -76,12 +76,12 @@ public class GifImageView extends ImageView {
                     break;
 
                 case MeasureSpec.AT_MOST:
-                    int suitableWidth = (int)(mMovie.width() * suitableScale);
+                    int suitableWidth = (int) (mMovie.width() * suitableScale);
                     width = suitableWidth < defaultWidth ? suitableWidth : defaultWidth;
                     break;
 
                 case MeasureSpec.UNSPECIFIED:
-                    width = (int)(mMovie.width() * suitableScale);
+                    width = (int) (mMovie.width() * suitableScale);
                     break;
 
                 default:
@@ -92,6 +92,9 @@ public class GifImageView extends ImageView {
             mScale = (float) width / (float) movieWidth;
             mMeasuredMovieWidth = width;
             mMeasuredMovieHeight = (int) (movieHeight * mScale);
+            if (mode == MeasureSpec.EXACTLY) {
+                mMeasuredMovieHeight = MeasureSpec.getSize(heightMeasureSpec);
+            }
             setMeasuredDimension(mMeasuredMovieWidth, mMeasuredMovieHeight);
         }
     }
@@ -100,8 +103,8 @@ public class GifImageView extends ImageView {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         if (mMovie != null) {
-            mLeft = (getWidth() - mMeasuredMovieWidth) / 2f;
-            mTop = (getHeight() - mMeasuredMovieHeight) / 2f;
+            mLeft = (mMeasuredMovieWidth - mMovie.width() * mScale) / 2f;
+            mTop = (mMeasuredMovieHeight - mMovie.height() * mScale) / 2f;
         }
     }
 

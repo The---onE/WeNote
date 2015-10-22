@@ -37,7 +37,7 @@ public class AlbumActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cp_photoalbum_activity);
+        setContentView(R.layout.cp_album_activity);
         albumGV = (GridView) findViewById(R.id.album_gridview);
         albumList = getPhotoAlbum();
         albumGV.setAdapter(new AlbumAdapter(albumList, this));
