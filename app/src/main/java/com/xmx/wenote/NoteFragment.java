@@ -14,10 +14,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.xmx.wenote.ChoosePhoto.AlbumActivity;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
+import com.xmx.wenote.Database.SQLManager;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,6 @@ public class NoteFragment extends Fragment {
     ArrayList<LinearLayout> layouts = new ArrayList<>();
     ArrayList<GifImageView> images = new ArrayList<>();
     ArrayList<String> paths = new ArrayList<>();
-    String sqlFile = android.os.Environment.getExternalStorageDirectory() + "/WeNote/note.db";
 
     @Nullable
     @Override
@@ -55,9 +54,9 @@ public class NoteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!paths.isEmpty()) {
-                    Toast.makeText(getContext(), paths.toString(), Toast.LENGTH_LONG).show();
+                    SQLManager sqlManager = new SQLManager();
+
                     //TODO
-                    Toast.makeText(getContext(), sqlFile, Toast.LENGTH_LONG).show();
                 }
             }
         });
