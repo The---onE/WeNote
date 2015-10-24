@@ -29,6 +29,8 @@ public class NoteFragment extends Fragment {
     ArrayList<GifImageView> images = new ArrayList<>();
     ArrayList<String> paths = new ArrayList<>();
 
+    SQLManager sqlManager = new SQLManager();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class NoteFragment extends Fragment {
     }
 
     static final int CHOOSE_IMAGE = 1;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -53,11 +56,9 @@ public class NoteFragment extends Fragment {
         note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!paths.isEmpty()) {
-                    SQLManager sqlManager = new SQLManager();
+                //TODO
 
-                    //TODO
-                }
+                sqlManager.insertNote("title", "text", paths);
             }
         });
     }
@@ -69,8 +70,8 @@ public class NoteFragment extends Fragment {
         if (requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
             paths = data.getStringArrayListExtra("paths");
 
-            LinearLayout parent = (LinearLayout)getActivity().findViewById(R.id.note_layout);
-            for (LinearLayout l:layouts) {
+            LinearLayout parent = (LinearLayout) getActivity().findViewById(R.id.note_layout);
+            for (LinearLayout l : layouts) {
                 parent.removeView(l);
             }
             layouts.clear();
@@ -80,9 +81,9 @@ public class NoteFragment extends Fragment {
             int width = wm.getDefaultDisplay().getWidth();
 
             LinearLayout l = new LinearLayout(getContext());
-            for (int i=0; i<paths.size(); ++i) {
+            for (int i = 0; i < paths.size(); ++i) {
                 String path = paths.get(i);
-                if (i%4 == 0) {
+                if (i % 4 == 0) {
                     l = new LinearLayout(getContext());
                     l.setOrientation(LinearLayout.HORIZONTAL);
                     l.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,

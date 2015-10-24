@@ -1,6 +1,5 @@
 package com.xmx.wenote;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,10 +14,11 @@ import com.xmx.wenote.Database.SQLManager;
  */
 public class TimelineFragment extends Fragment {
 
+    SQLManager sqlManager = new SQLManager();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SQLManager sqlManager = new SQLManager();
 
         return inflater.inflate(R.layout.timeline_view, container, false);
     }
