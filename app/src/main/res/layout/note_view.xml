@@ -17,7 +17,16 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editText"
+                android:singleLine="true"
+                android:id="@+id/title"
+                android:hint="@string/title"
+                android:layout_gravity="center_horizontal" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text"
+                android:hint="@string/text"
                 android:layout_gravity="center_horizontal" />
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

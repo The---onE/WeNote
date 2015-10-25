@@ -58,8 +58,8 @@ public class SQLManager {
         return database != null || openDatabase();
     }
 
-    public String insertPhotos(ArrayList<String> paths) {
-        String photos = new String();
+    private String insertPhotos(ArrayList<String> paths) {
+        String photos = "";
         for (String path : paths) {
             ContentValues content = new ContentValues();
 
@@ -95,10 +95,7 @@ public class SQLManager {
         return true;
     }
 
-    public Bitmap getPhoto(int id) {
-        if (!checkDatabase()) {
-            return null;
-        }
+    private Bitmap getPhoto(int id) {
         Cursor cursor = database.rawQuery("select PHOTO from PHOTOS where ID=?", new String[]{"" + id});
         cursor.moveToFirst();
         byte[] bytes = cursor.getBlob(0);
@@ -107,5 +104,32 @@ public class SQLManager {
         } else {
             return null;
         }
+    }
+
+    //ID TITLE TEXT PHOTO TIME
+    public Cursor getCursor() {
+        if (!checkDatabase()) {
+            return null;
+        }
+        Cursor cursor = database.rawQuery("select * from NOTE", null);
+        return cursor;
+    }
+
+    public ArrayList<Bitmap> getPhotos(String idsString) {
+        if (!checkDatabase()) {
+            return null;
+        }
+        if (idsString.isEmpty()) {
+            return null;
+        }
+        ArrayList<Bitmap> bitmaps = new ArrayList<>();
+        String[] ids = idsString.split("\\|");
+        for (String idString : ids) {
+            if (!idString.equals("")) {
+                int id = Integer.parseInt(idString);
+                bitmaps.add(getPhoto(id));
+            }
+        }
+        return bitmaps;
     }
 }

@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.xmx.wenote.ChoosePhoto.AlbumActivity;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
@@ -57,8 +59,17 @@ public class NoteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //TODO
-
-                sqlManager.insertNote("title", "text", paths);
+                String title = ((EditText)getActivity().findViewById(R.id.title)).getText().toString();
+                if (title.isEmpty()) {
+                    Toast.makeText(getContext(), "必须输入标题", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String text = ((EditText)getActivity().findViewById(R.id.text)).getText().toString();
+                if (sqlManager.insertNote(title, text, paths)) {
+                    Toast.makeText(getContext(), "记录成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "记录失败", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
