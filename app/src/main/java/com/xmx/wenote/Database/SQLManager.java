@@ -3,11 +3,11 @@ package com.xmx.wenote.Database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -22,14 +22,9 @@ public class SQLManager {
     }
 
     private boolean openDatabase() {
-        boolean flag;
         String d = android.os.Environment.getExternalStorageDirectory() + "/WeNote";
         File dir = new File(d);
-        if (!dir.exists()) {
-            flag = dir.mkdirs();
-        } else {
-            flag = true;
-        }
+        boolean flag = dir.exists() || dir.mkdirs();
 
         if (flag) {
             String sqlFile = android.os.Environment.getExternalStorageDirectory() + "/WeNote/note.db";
@@ -48,7 +43,7 @@ public class SQLManager {
 
             String createPhotoSQL = "create table if not exists PHOTOS(" +
                     "ID integer not null primary key autoincrement, " +
-                    "PHOTO blob not null)";
+                    "PHOTO text not null)";
             database.execSQL(createPhotoSQL);
         }
         return database != null;
@@ -63,18 +58,47 @@ public class SQLManager {
         for (String path : paths) {
             ContentValues content = new ContentValues();
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            /*ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Bitmap bitmap = BitmapFactory.decodeFile(path);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 75, baos);
-            byte[] bytes = baos.toByteArray();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 20, baos);
+            byte[] bytes = baos.toByteArray();*/
 
-            content.put("PHOTO", bytes);
+            int id = 0;
+            String newPath = android.os.Environment.getExternalStorageDirectory() + "/WeNote/" + path.hashCode();
+            File newFile = new File(newPath);
+            if (newFile.exists()) {
+                Cursor cursor = database.rawQuery("select ID from PHOTOS where PHOTO=?", new String[]{newPath});
+                if (cursor.moveToFirst()) {
+                    id = cursor.getInt(0);
+                }
+                cursor.close();
+            }
+            if (id == 0) {
+                try {
+                    File photo = new File(path);
+                    if (photo.exists()) {
+                        InputStream is = new FileInputStream(path);
+                        FileOutputStream os = new FileOutputStream(newPath);
+                        byte[] buffer = new byte[1444];
+                        int count;
+                        while ((count = is.read(buffer)) != -1) {
+                            os.write(buffer, 0, count);
+                        }
+                        is.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            database.insert("PHOTOS", null, content);
+                content.put("PHOTO", newPath);
 
-            Cursor cursor = database.rawQuery("select last_insert_rowid()", null);
-            cursor.moveToFirst();
-            int id = cursor.getInt(0);
+                database.insert("PHOTOS", null, content);
+
+                Cursor cursor = database.rawQuery("select last_insert_rowid()", null);
+                cursor.moveToFirst();
+                id = cursor.getInt(0);
+                cursor.close();
+            }
             photos = photos + id + "|";
         }
         return photos;
@@ -95,12 +119,12 @@ public class SQLManager {
         return true;
     }
 
-    private Bitmap getPhoto(int id) {
+    private String getPhoto(int id) {
         Cursor cursor = database.rawQuery("select PHOTO from PHOTOS where ID=?", new String[]{"" + id});
-        cursor.moveToFirst();
-        byte[] bytes = cursor.getBlob(0);
-        if (bytes.length != 0) {
-            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        if (cursor.moveToFirst()) {
+            String path = cursor.getString(0);
+            cursor.close();
+            return path;
         } else {
             return null;
         }
@@ -111,25 +135,24 @@ public class SQLManager {
         if (!checkDatabase()) {
             return null;
         }
-        Cursor cursor = database.rawQuery("select * from NOTE", null);
-        return cursor;
+        return database.rawQuery("select * from NOTE", null);
     }
 
-    public ArrayList<Bitmap> getPhotos(String idsString) {
+    public ArrayList<String> getPhotos(String idsString) {
         if (!checkDatabase()) {
             return null;
         }
         if (idsString.isEmpty()) {
             return null;
         }
-        ArrayList<Bitmap> bitmaps = new ArrayList<>();
+        ArrayList<String> paths = new ArrayList<>();
         String[] ids = idsString.split("\\|");
         for (String idString : ids) {
             if (!idString.equals("")) {
                 int id = Integer.parseInt(idString);
-                bitmaps.add(getPhoto(id));
+                paths.add(getPhoto(id));
             }
         }
-        return bitmaps;
+        return paths;
     }
 }

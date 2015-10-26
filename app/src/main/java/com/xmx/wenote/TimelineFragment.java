@@ -2,7 +2,6 @@ package com.xmx.wenote;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
+import com.xmx.wenote.ChoosePhoto.entities.ImageLoader;
 import com.xmx.wenote.Database.SQLManager;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class TimelineFragment extends Fragment {
                 String title = cursor.getString(1);
                 String text = cursor.getString(2);
                 String p = cursor.getString(3);
-                ArrayList<Bitmap> photos = sqlManager.getPhotos(p);
+                ArrayList<String> photos = sqlManager.getPhotos(p);
                 String time = cursor.getString(4);
 
                 LinearLayout layout = new LinearLayout(getContext());
@@ -81,12 +81,15 @@ public class TimelineFragment extends Fragment {
                     sv.addView(l);
 
                     for (int i = 0; i < photos.size(); ++i) {
-                        Bitmap bitmap = photos.get(i);
-                        GifImageView iv = new GifImageView(getContext());
-                        iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
-                        iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        iv.setImageBitmap(bitmap);
-                        l.addView(iv);
+                        String path = photos.get(i);
+                        if (!path.isEmpty()) {
+                            GifImageView iv = new GifImageView(getContext());
+                            iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
+                            iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(path, iv);
+                            //iv.setImagePath(path);
+                            l.addView(iv);
+                        }
                     }
                 }
 
@@ -97,6 +100,7 @@ public class TimelineFragment extends Fragment {
                 layout.addView(timeTV);
 
             } while (cursor.moveToNext());
+            cursor.close();
         }
     }
 }
