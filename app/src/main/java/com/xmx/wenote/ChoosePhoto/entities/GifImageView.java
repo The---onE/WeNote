@@ -21,8 +21,8 @@ import java.io.FileNotFoundException;
 public class GifImageView extends ImageView {
 
     private static final int DEFAULT_MOVIE_DURATION = 1000;
-    private String path;
-    private boolean touchable;
+    private String mPath;
+    private boolean mTouchable;
     private Movie mMovie;
     private long mMovieStart;
     private int mCurrentAnimationTime = 0;
@@ -48,9 +48,17 @@ public class GifImageView extends ImageView {
         }
     }
 
-    public void setImageByPath(final String path, final boolean touchable) {
-        this.path = path;
-        this.touchable = touchable;
+    public void setImageMovie(Movie movie) {
+        if (movie != null) {
+            mMovie = movie;
+            requestLayout();
+            postInvalidate();
+        }
+    }
+
+    public void setImageByPath(String path, boolean touchable) {
+        mPath = path;
+        mTouchable = touchable;
         Movie movie = null;
         try {
             movie = Movie.decodeStream(new FileInputStream(path));
@@ -59,33 +67,28 @@ public class GifImageView extends ImageView {
         }
 
         if (movie != null) {
-            this.mMovie = movie;
-            requestLayout();
+            setImageMovie(movie);
         } else {
             setImageBitmap(BitmapFactory.decodeFile(path));
         }
     }
 
     public void setImagePath(String path, boolean touchable) {
-        this.path = path;
-        this.touchable = touchable;
-    }
-
-    public String getImagePath() {
-        return path;
+        mPath = path;
+        mTouchable = touchable;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                if (touchable && path != null) {
+                if (mTouchable && mPath != null) {
                     Intent intent = new Intent(getContext(), BigPhotoActivity.class);
-                    intent.putExtra("path", path);
+                    intent.putExtra("path", mPath);
                     getContext().startActivity(intent);
                 }
         }
-        return touchable || super.onTouchEvent(event);
+        return mTouchable || super.onTouchEvent(event);
     }
 
     @Override
@@ -124,16 +127,9 @@ public class GifImageView extends ImageView {
             if (mode == MeasureSpec.EXACTLY) {
                 mMeasuredMovieHeight = MeasureSpec.getSize(heightMeasureSpec);
             }
-            setMeasuredDimension(mMeasuredMovieWidth, mMeasuredMovieHeight);
-        }
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        if (mMovie != null) {
             mLeft = (mMeasuredMovieWidth - mMovie.width() * mScale) / 2f;
             mTop = (mMeasuredMovieHeight - mMovie.height() * mScale) / 2f;
+            setMeasuredDimension(mMeasuredMovieWidth, mMeasuredMovieHeight);
         }
     }
 

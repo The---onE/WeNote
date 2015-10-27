@@ -15,8 +15,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.xmx.wenote.ChoosePhoto.entities.GifImageLoader;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
-import com.xmx.wenote.ChoosePhoto.entities.ImageLoader;
 import com.xmx.wenote.Database.SQLManager;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class TimelineFragment extends Fragment {
         LinearLayout parent = (LinearLayout) getActivity().findViewById(R.id.layout);
 
         Cursor cursor = sqlManager.getCursor();
-        if (cursor.moveToFirst()) {
+        if (cursor.moveToLast()) {
             do {
                 //ID TITLE TEXT PHOTO TIME
                 int id = cursor.getInt(0);
@@ -86,8 +86,7 @@ public class TimelineFragment extends Fragment {
                             GifImageView iv = new GifImageView(getContext());
                             iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
                             iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(path, iv);
-                            iv.setImagePath(path, true);
+                            GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO).loadImage(path, iv, true);
                             l.addView(iv);
                         }
                     }
@@ -99,7 +98,7 @@ public class TimelineFragment extends Fragment {
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 layout.addView(timeTV);
 
-            } while (cursor.moveToNext());
+            } while (cursor.moveToPrevious());
             cursor.close();
         }
     }

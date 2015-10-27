@@ -3,6 +3,8 @@ package com.xmx.wenote;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.xmx.wenote.ChoosePhoto.AlbumActivity;
+import com.xmx.wenote.ChoosePhoto.entities.GifImageLoader;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 import com.xmx.wenote.Database.SQLManager;
 
@@ -33,10 +36,50 @@ public class NoteFragment extends Fragment {
 
     SQLManager sqlManager = new SQLManager();
 
+    NoteHandler noteHandler = new NoteHandler();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.note_view, container, false);
+    }
+
+    private String getTitle() {
+        return ((EditText) getActivity().findViewById(R.id.title)).getText().toString();
+    }
+
+    private String getText() {
+        return ((EditText) getActivity().findViewById(R.id.text)).getText().toString();
+    }
+
+    class NoteThread implements Runnable {
+        @Override
+        public void run() {
+            boolean flag = sqlManager.insertNote(getTitle(), getText(), paths);
+            Message msg = Message.obtain();
+            Bundle b = new Bundle();
+            b.putBoolean("flag", flag);
+            msg.setData(b);
+            NoteFragment.this.noteHandler.sendMessage(msg);
+        }
+    }
+
+    class NoteHandler extends Handler {
+        public NoteHandler() {
+            super();
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            boolean flag = msg.getData().getBoolean("flag");
+            if (flag) {
+                Toast.makeText(NoteFragment.this.getContext(), "记录成功", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(NoteFragment.this.getContext(), "记录失败", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     static final int CHOOSE_IMAGE = 1;
@@ -58,18 +101,13 @@ public class NoteFragment extends Fragment {
         note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
-                String title = ((EditText) getActivity().findViewById(R.id.title)).getText().toString();
-                if (title.isEmpty()) {
+                if (getTitle().isEmpty()) {
                     Toast.makeText(getContext(), "必须输入标题", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String text = ((EditText) getActivity().findViewById(R.id.text)).getText().toString();
-                if (sqlManager.insertNote(title, text, paths)) {
-                    Toast.makeText(getContext(), "记录成功", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "记录失败", Toast.LENGTH_SHORT).show();
-                }
+                NoteThread t = new NoteThread();
+                new Thread(t).start();
+
             }
         });
     }
@@ -104,7 +142,7 @@ public class NoteFragment extends Fragment {
                     layouts.add(l);
                 }
                 GifImageView iv = new GifImageView(getActivity());
-                iv.setImageByPath(path, true);
+                GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO).loadImage(path, iv, true);
                 iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
                 iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 l.addView(iv);

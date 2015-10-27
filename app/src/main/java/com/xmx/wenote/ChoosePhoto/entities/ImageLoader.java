@@ -124,8 +124,6 @@ public class ImageLoader {
             protected int sizeOf(String key, Bitmap value) {
                 return value.getRowBytes() * value.getHeight();
             }
-
-            ;
         };
 
         mThreadPool = Executors.newFixedThreadPool(threadCount);
