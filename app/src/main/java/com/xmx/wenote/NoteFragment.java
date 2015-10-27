@@ -59,12 +59,12 @@ public class NoteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //TODO
-                String title = ((EditText)getActivity().findViewById(R.id.title)).getText().toString();
+                String title = ((EditText) getActivity().findViewById(R.id.title)).getText().toString();
                 if (title.isEmpty()) {
                     Toast.makeText(getContext(), "必须输入标题", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String text = ((EditText)getActivity().findViewById(R.id.text)).getText().toString();
+                String text = ((EditText) getActivity().findViewById(R.id.text)).getText().toString();
                 if (sqlManager.insertNote(title, text, paths)) {
                     Toast.makeText(getContext(), "记录成功", Toast.LENGTH_SHORT).show();
                 } else {
@@ -104,7 +104,7 @@ public class NoteFragment extends Fragment {
                     layouts.add(l);
                 }
                 GifImageView iv = new GifImageView(getActivity());
-                iv.setImagePath(path);
+                iv.setImageByPath(path, true);
                 iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
                 iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 l.addView(iv);

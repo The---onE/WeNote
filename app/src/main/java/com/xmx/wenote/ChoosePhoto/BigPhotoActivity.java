@@ -19,7 +19,7 @@ public class BigPhotoActivity extends Activity {
         path = getIntent().getStringExtra("path");
 
         gif_view = (GifImageView) findViewById(R.id.gif_view);
-        gif_view.setImagePath(path);
+        gif_view.setImageByPath(path, false);
     }
 
     @Override

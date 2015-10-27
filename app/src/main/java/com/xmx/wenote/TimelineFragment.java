@@ -87,7 +87,7 @@ public class TimelineFragment extends Fragment {
                             iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
                             iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                             ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(path, iv);
-                            //iv.setImagePath(path);
+                            iv.setImagePath(path, true);
                             l.addView(iv);
                         }
                     }

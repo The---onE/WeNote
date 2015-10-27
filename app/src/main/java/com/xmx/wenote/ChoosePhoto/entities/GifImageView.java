@@ -2,14 +2,17 @@ package com.xmx.wenote.ChoosePhoto.entities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Movie;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.xmx.wenote.ChoosePhoto.BigPhotoActivity;
 import com.xmx.wenote.R;
 
 import java.io.FileInputStream;
@@ -18,6 +21,8 @@ import java.io.FileNotFoundException;
 public class GifImageView extends ImageView {
 
     private static final int DEFAULT_MOVIE_DURATION = 1000;
+    private String path;
+    private boolean touchable;
     private Movie mMovie;
     private long mMovieStart;
     private int mCurrentAnimationTime = 0;
@@ -43,7 +48,9 @@ public class GifImageView extends ImageView {
         }
     }
 
-    public void setImagePath(String path) {
+    public void setImageByPath(final String path, final boolean touchable) {
+        this.path = path;
+        this.touchable = touchable;
         Movie movie = null;
         try {
             movie = Movie.decodeStream(new FileInputStream(path));
@@ -57,6 +64,28 @@ public class GifImageView extends ImageView {
         } else {
             setImageBitmap(BitmapFactory.decodeFile(path));
         }
+    }
+
+    public void setImagePath(String path, boolean touchable) {
+        this.path = path;
+        this.touchable = touchable;
+    }
+
+    public String getImagePath() {
+        return path;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                if (touchable && path != null) {
+                    Intent intent = new Intent(getContext(), BigPhotoActivity.class);
+                    intent.putExtra("path", path);
+                    getContext().startActivity(intent);
+                }
+        }
+        return touchable || super.onTouchEvent(event);
     }
 
     @Override
