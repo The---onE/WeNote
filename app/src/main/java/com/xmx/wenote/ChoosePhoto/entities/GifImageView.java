@@ -30,9 +30,6 @@ public class GifImageView extends ImageView {
     private float mTop;
     private float mScale;
 
-    private int mMeasuredMovieWidth;
-    private int mMeasuredMovieHeight;
-
     public GifImageView(Context context) {
         this(context, null);
     }
@@ -120,6 +117,9 @@ public class GifImageView extends ImageView {
                     width = 1;
                     break;
             }
+
+            int mMeasuredMovieWidth;
+            int mMeasuredMovieHeight;
 
             mScale = (float) width / (float) movieWidth;
             mMeasuredMovieWidth = width;

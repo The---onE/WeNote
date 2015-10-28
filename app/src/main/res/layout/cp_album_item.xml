@@ -5,12 +5,12 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
+    <com.xmx.wenote.ChoosePhoto.entities.GifImageView
         android:id="@+id/album_item_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/pic_loading" />
 
     <TextView
         android:id="@+id/album_item_name"

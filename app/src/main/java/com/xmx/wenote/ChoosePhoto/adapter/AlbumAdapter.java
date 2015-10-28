@@ -5,11 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xmx.wenote.ChoosePhoto.entities.AlbumItem;
-import com.xmx.wenote.ChoosePhoto.entities.ImageLoader;
+import com.xmx.wenote.ChoosePhoto.entities.GifImageLoader;
+import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 import com.xmx.wenote.R;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class AlbumAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        ImageView iv;
+        GifImageView iv;
         TextView tv;
     }
 
@@ -49,13 +49,14 @@ public class AlbumAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.cp_album_item, null);
             holder = new ViewHolder();
-            holder.iv = (ImageView) convertView.findViewById(R.id.album_item_image);
+            holder.iv = (GifImageView) convertView.findViewById(R.id.album_item_image);
             holder.tv = (TextView) convertView.findViewById(R.id.album_item_name);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(albumList.get(position).getBitList().get(0).getPath(), holder.iv);
+        GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO)
+                .loadImage(albumList.get(position).getBitList().get(0).getPath(), holder.iv, false);
         holder.tv.setText(albumList.get(position).getName() + "(" + albumList.get(position).getCount() + ")");
         return convertView;
     }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,7 +17,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.util.LruCache;
-import android.util.Log;
+import android.util.DisplayMetrics;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 public class GifImageLoader {
 
@@ -60,7 +63,7 @@ public class GifImageLoader {
     /**
      * 运行在UI线程的handler，用于给ImageView设置图片
      */
-    private Handler mHandler;
+    private LoadImageHandler mHandler;
 
     /**
      * 引入一个值为1的信号量，防止mPoolThreadHander未初始化完成
@@ -171,6 +174,24 @@ public class GifImageLoader {
 
     }
 
+    class LoadImageHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            ImgBeanHolder holder = (ImgBeanHolder) msg.obj;
+            GifImageView imageView = holder.imageView;
+            String path = holder.path;
+            Image im = holder.image;
+            if (imageView.getTag().toString().equals(path)) {
+                if (im.movie != null) {
+                    imageView.setImageMovie(im.movie);
+                } else if (im.bitmap != null) {
+                    imageView.setImageBitmap(im.bitmap);
+                }
+            }
+        }
+    }
+
     /**
      * 加载图片
      *
@@ -180,25 +201,10 @@ public class GifImageLoader {
     public void loadImage(final String path, final GifImageView imageView, final boolean touchable) {
         // set tag
         imageView.setTag(path);
+        imageView.setImagePath(path, touchable);
         // UI线程
         if (mHandler == null) {
-            mHandler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    ImgBeanHolder holder = (ImgBeanHolder) msg.obj;
-                    GifImageView imageView = holder.imageView;
-                    String path = holder.path;
-                    if (imageView.getTag().toString().equals(path)) {
-                        Image im = holder.image;
-                        if (im.movie != null) {
-                            imageView.setImageMovie(im.movie);
-                        } else if (im.bitmap != null) {
-                            imageView.setImageBitmap(im.bitmap);
-                        }
-                        imageView.setImagePath(path, touchable);
-                    }
-                }
-            };
+            mHandler = new LoadImageHandler();
         }
 
         Image im = getImageFromLruCache(path);
@@ -223,11 +229,16 @@ public class GifImageLoader {
                     }
 
                     if (movie != null) {
-                        im.movie = movie;
                         im.bitmap = null;
+                        im.movie = movie;
                     } else {
-                        im.bitmap = BitmapFactory.decodeFile(path);
                         im.movie = null;
+                        //im.bitmap = BitmapFactory.decodeFile(path);
+                        ImageSize imageSize = getImageViewWidth(imageView);
+                        int reqWidth = imageSize.width;
+                        int reqHeight = imageSize.height;
+
+                        im.bitmap = decodeSampledBitmapFromResource(path, reqWidth,reqHeight);
                     }
 
                     addImageToLruCache(path, im);
@@ -295,4 +306,115 @@ public class GifImageLoader {
         }
     }
 
+
+
+    private class ImageSize {
+        int width;
+        int height;
+    }
+
+    /**
+     * 反射获得ImageView设置的最大宽度和高度
+     *
+     * @param object
+     * @param fieldName
+     * @return
+     */
+    private static int getImageViewFieldValue(Object object, String fieldName) {
+        int value = 0;
+        try {
+            Field field = ImageView.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            int fieldValue = (Integer) field.get(object);
+            if (fieldValue > 0 && fieldValue < Integer.MAX_VALUE) {
+                value = fieldValue;
+            }
+        } catch (Exception e) {
+        }
+        return value;
+    }
+
+    /**
+     * 根据ImageView获得适当的压缩的宽和高
+     *
+     * @param imageView
+     * @return
+     */
+    private ImageSize getImageViewWidth(ImageView imageView) {
+        ImageSize imageSize = new ImageSize();
+        final DisplayMetrics displayMetrics = imageView.getContext()
+                .getResources().getDisplayMetrics();
+        final ViewGroup.LayoutParams params = imageView.getLayoutParams();
+
+        int width = params.width == ViewGroup.LayoutParams.WRAP_CONTENT ? 0 : imageView
+                .getWidth(); // Get actual image width
+        if (width <= 0)
+            width = params.width; // Get layout width parameter
+        if (width <= 0)
+            width = getImageViewFieldValue(imageView, "mMaxWidth"); // Check
+        // maxWidth
+        // parameter
+        if (width <= 0)
+            width = displayMetrics.widthPixels;
+        int height = params.height == ViewGroup.LayoutParams.WRAP_CONTENT ? 0 : imageView
+                .getHeight(); // Get actual image height
+        if (height <= 0)
+            height = params.height; // Get layout height parameter
+        if (height <= 0)
+            height = getImageViewFieldValue(imageView, "mMaxHeight"); // Check
+        // maxHeight
+        // parameter
+        if (height <= 0)
+            height = displayMetrics.heightPixels;
+        imageSize.width = width;
+        imageSize.height = height;
+        return imageSize;
+
+    }
+
+    /**
+     * 计算inSampleSize，用于压缩图片
+     *
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // 源图片的宽度
+        int width = options.outWidth;
+        int height = options.outHeight;
+        int inSampleSize = 1;
+
+        if (width > reqWidth && height > reqHeight) {
+            // 计算出实际宽度和目标宽度的比率
+            int widthRatio = Math.round((float) width / (float) reqWidth);
+            int heightRatio = Math.round((float) height / (float) reqHeight);
+            inSampleSize = Math.max(widthRatio, heightRatio);
+        }
+        return inSampleSize;
+    }
+
+    /**
+     * 根据计算的inSampleSize，得到压缩后图片
+     *
+     * @param pathName
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    private Bitmap decodeSampledBitmapFromResource(String pathName, int reqWidth, int reqHeight) {
+        // 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(pathName, options);
+        // 调用上面定义的方法计算inSampleSize值
+        options.inSampleSize = calculateInSampleSize(options, reqWidth,
+                reqHeight);
+        // 使用获取到的inSampleSize值再次解析图片
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
+
+        return bitmap;
+    }
 }

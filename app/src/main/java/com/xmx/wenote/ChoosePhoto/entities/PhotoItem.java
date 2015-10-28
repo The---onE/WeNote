@@ -1,7 +1,6 @@
 package com.xmx.wenote.ChoosePhoto.entities;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.Checkable;
@@ -13,7 +12,7 @@ import com.xmx.wenote.R;
 public class PhotoItem extends RelativeLayout implements Checkable {
     private Context mContext;
     private boolean mCheck;
-    private ImageView mImageView;
+    private GifImageView mImageView;
     private ImageView mSelect;
 
     public PhotoItem(Context context) {
@@ -28,7 +27,7 @@ public class PhotoItem extends RelativeLayout implements Checkable {
         super(context, attrs, defStyle);
         mContext = context;
         LayoutInflater.from(mContext).inflate(R.layout.cp_photo_item, this);
-        mImageView = (ImageView) findViewById(R.id.photo_img_view);
+        mImageView = (GifImageView) findViewById(R.id.photo_img_view);
         mSelect = (ImageView) findViewById(R.id.photo_select);
     }
 
@@ -51,7 +50,7 @@ public class PhotoItem extends RelativeLayout implements Checkable {
     }
 
     public void setPath(String path) {
-        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(path, mImageView);
+        GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO).loadImage(path, mImageView, false);
     }
 
 }

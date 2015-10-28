@@ -5,11 +5,11 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
+    <com.xmx.wenote.ChoosePhoto.entities.GifImageView
         android:id="@+id/chosen_item_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="centerCrop"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/pic_loading" />
 </LinearLayout>
