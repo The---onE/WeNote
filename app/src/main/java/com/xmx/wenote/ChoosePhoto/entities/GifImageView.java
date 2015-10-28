@@ -3,6 +3,7 @@ package com.xmx.wenote.ChoosePhoto.entities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Movie;
@@ -51,6 +52,14 @@ public class GifImageView extends ImageView {
             requestLayout();
             postInvalidate();
         }
+    }
+
+    @Override
+    public void setImageBitmap(Bitmap bm) {
+        super.setImageBitmap(bm);
+        mMovie = null;
+        requestLayout();
+        postInvalidate();
     }
 
     public void setImageByPath(String path, boolean touchable) {
