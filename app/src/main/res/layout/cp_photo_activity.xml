@@ -11,16 +11,16 @@
 
         <GridView
             android:id="@+id/photo_gridview"
-            android:layout_above="@+id/chosen_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/chosen_layout"
             android:layout_alignParentTop="true"
             android:gravity="center"
+            android:horizontalSpacing="2dp"
             android:listSelector="#50000000"
             android:numColumns="4"
-            android:horizontalSpacing="2dp"
-            android:verticalSpacing="2dp"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:verticalSpacing="2dp" />
 
         <RelativeLayout
             android:id="@+id/chosen_layout"
@@ -47,9 +47,9 @@
                         android:id="@+id/chosen_gridview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:stretchMode="spacingWidth"
                         android:horizontalSpacing="5dp"
-                        android:scrollbars="none" />
+                        android:scrollbars="none"
+                        android:stretchMode="spacingWidth" />
                 </LinearLayout>
             </HorizontalScrollView>
 
@@ -57,8 +57,8 @@
                 android:id="@+id/btn_sure"
                 android:layout_width="80dip"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:gravity="center"
                 android:text="确定"

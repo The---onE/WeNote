@@ -8,12 +8,12 @@
         android:id="@+id/album_gridview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:numColumns="auto_fit"
         android:columnWidth="100dp"
-        android:stretchMode="columnWidth"
+        android:gravity="center"
         android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
-        android:scrollbars="vertical" />
+        android:numColumns="auto_fit"
+        android:scrollbars="vertical"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" />
 
 </LinearLayout>
