@@ -38,6 +38,8 @@ public class NoteFragment extends Fragment {
 
     NoteHandler noteHandler = new NoteHandler();
 
+    Button clear;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -117,7 +119,7 @@ public class NoteFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CHOOSE_IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            paths = data.getStringArrayListExtra("paths");
+            paths.addAll(data.getStringArrayListExtra("paths"));
 
             LinearLayout parent = (LinearLayout) getActivity().findViewById(R.id.note_layout);
             for (LinearLayout l : layouts) {
@@ -148,6 +150,28 @@ public class NoteFragment extends Fragment {
                 iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 l.addView(iv);
                 images.add(iv);
+            }
+
+            if (clear == null) {
+                clear = new Button(getActivity());
+                clear.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                clear.setText(R.string.clear);
+                clear.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LinearLayout parent = (LinearLayout) getActivity().findViewById(R.id.note_layout);
+                        for (LinearLayout l : layouts) {
+                            parent.removeView(l);
+                        }
+                        layouts.clear();
+                        images.clear();
+                        paths.clear();
+                        ((LinearLayout) getActivity().findViewById(R.id.photo_button_layout)).removeView(clear);
+                        clear = null;
+                    }
+                });
+                ((LinearLayout) getActivity().findViewById(R.id.photo_button_layout)).addView(clear);
             }
         }
     }

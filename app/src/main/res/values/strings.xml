@@ -9,5 +9,6 @@
     <string name="choose">选择图片</string>
     <string name="title">标题</string>
     <string name="text">内容</string>
+    <string name="clear">清空图片</string>
 
 </resources>
