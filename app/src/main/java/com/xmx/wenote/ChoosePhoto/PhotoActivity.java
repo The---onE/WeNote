@@ -69,7 +69,7 @@ public class PhotoActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                String path = chosen_adapter.getItem(position).getPath();
+                //String path = chosen_adapter.getItem(position).getPath();
                 Intent intent = new Intent(PhotoActivity.this, BigPhotoActivity.class);
                 //intent.putExtra("path", path);
                 intent.putExtra("paths", paths);

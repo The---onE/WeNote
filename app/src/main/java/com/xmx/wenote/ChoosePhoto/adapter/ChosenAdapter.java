@@ -52,7 +52,7 @@ public class ChosenAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO).loadImage(photos.get(position).getPath(), holder.iv, true);
+        GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO).loadImage(photos.get(position).getPath(), holder.iv, false);
         return convertView;
     }
 }
