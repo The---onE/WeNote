@@ -71,7 +71,9 @@ public class PhotoActivity extends Activity {
                                     int position, long id) {
                 String path = chosen_adapter.getItem(position).getPath();
                 Intent intent = new Intent(PhotoActivity.this, BigPhotoActivity.class);
-                intent.putExtra("path", path);
+                //intent.putExtra("path", path);
+                intent.putExtra("paths", paths);
+                intent.putExtra("index", position);
                 startActivity(intent);
 
                 //TODO
