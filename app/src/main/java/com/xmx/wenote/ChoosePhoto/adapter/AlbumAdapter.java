@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.xmx.wenote.ChoosePhoto.entities.AlbumItem;
-import com.xmx.wenote.ChoosePhoto.entities.GifImageLoader;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 import com.xmx.wenote.R;
 
@@ -55,8 +54,7 @@ public class AlbumAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO)
-                .loadImage(albumList.get(position).getBitList().get(0).getPath(), holder.iv, false);
+        holder.iv.setImageByPathLoader(albumList.get(position).getBitList().get(0).getPath(), false);
         holder.tv.setText(albumList.get(position).getName() + "(" + albumList.get(position).getCount() + ")");
         return convertView;
     }

@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.xmx.wenote.ChoosePhoto.AlbumActivity;
+import com.xmx.wenote.ChoosePhoto.BigPhotoActivity;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageLoader;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 import com.xmx.wenote.Database.SQLManager;
@@ -145,9 +146,19 @@ public class NoteFragment extends Fragment {
                 }
                 GifImageView iv = new GifImageView(getActivity());
                 iv.setImageResource(R.drawable.pic_loading);
-                GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO).loadImage(path, iv, true);
+                iv.setImageByPathLoader(path, false);
                 iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
                 iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), BigPhotoActivity.class);
+                        //intent.putExtra("path", path);
+                        intent.putExtra("paths", paths);
+                        intent.putExtra("index", paths.indexOf(((GifImageView) v).getPath()));
+                        startActivity(intent);
+                    }
+                });
                 l.addView(iv);
                 images.add(iv);
             }

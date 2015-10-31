@@ -50,7 +50,7 @@ public class PhotoItem extends RelativeLayout implements Checkable {
     }
 
     public void setPath(String path) {
-        GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO).loadImage(path, mImageView, false);
+        mImageView.setImageByPathLoader(path, false);
     }
 
 }

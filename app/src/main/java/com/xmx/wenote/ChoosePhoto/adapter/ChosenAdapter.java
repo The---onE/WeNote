@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.xmx.wenote.ChoosePhoto.entities.GifImageLoader;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 import com.xmx.wenote.ChoosePhoto.entities.PhotoInf;
 import com.xmx.wenote.R;
@@ -52,7 +51,7 @@ public class ChosenAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        GifImageLoader.getInstance(3, GifImageLoader.Type.LIFO).loadImage(photos.get(position).getPath(), holder.iv, false);
+        holder.iv.setImageByPathLoader(photos.get(position).getPath(), false);
         return convertView;
     }
 }

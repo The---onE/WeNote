@@ -21,7 +21,7 @@ import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-public class GifImageLoader {
+public class BigGifImageLoader {
 
     class Image {
         Bitmap bitmap;
@@ -75,7 +75,7 @@ public class GifImageLoader {
      */
     private volatile Semaphore mPoolSemaphore;
 
-    private static GifImageLoader mInstance;
+    private static BigGifImageLoader mInstance;
 
     /**
      * 队列的调度方式
@@ -86,7 +86,7 @@ public class GifImageLoader {
         FIFO, LIFO
     }
 
-    private GifImageLoader(int threadCount, Type type) {
+    private BigGifImageLoader(int threadCount, Type type) {
         init(threadCount, type);
     }
 
@@ -95,11 +95,11 @@ public class GifImageLoader {
      *
      * @return
      */
-    public static GifImageLoader getInstance() {
+    public static BigGifImageLoader getInstance() {
         if (mInstance == null) {
-            synchronized (GifImageLoader.class) {
+            synchronized (BigGifImageLoader.class) {
                 if (mInstance == null) {
-                    mInstance = new GifImageLoader(1, Type.LIFO);
+                    mInstance = new BigGifImageLoader(1, Type.LIFO);
                 }
             }
         }
@@ -111,11 +111,11 @@ public class GifImageLoader {
      *
      * @return
      */
-    public static GifImageLoader getInstance(int threadCount, Type type) {
+    public static BigGifImageLoader getInstance(int threadCount, Type type) {
         if (mInstance == null) {
-            synchronized (GifImageLoader.class) {
+            synchronized (BigGifImageLoader.class) {
                 if (mInstance == null) {
-                    mInstance = new GifImageLoader(threadCount, type);
+                    mInstance = new BigGifImageLoader(threadCount, type);
                 }
             }
         }

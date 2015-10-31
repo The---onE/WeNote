@@ -25,11 +25,13 @@ public class GifImageView extends ImageView {
     private String mPath;
     private boolean mTouchable;
     private Movie mMovie;
+    private Bitmap mBitmap;
     private long mMovieStart;
     private int mCurrentAnimationTime = 0;
     private float mLeft;
     private float mTop;
     private float mScale;
+    private float defaultScale = 2.5f;
 
     public GifImageView(Context context) {
         this(context, null);
@@ -49,6 +51,7 @@ public class GifImageView extends ImageView {
     public void setImageMovie(Movie movie) {
         if (movie != null) {
             mMovie = movie;
+            mBitmap = null;
             requestLayout();
             postInvalidate();
         }
@@ -57,6 +60,7 @@ public class GifImageView extends ImageView {
     @Override
     public void setImageBitmap(Bitmap bm) {
         super.setImageBitmap(bm);
+        mBitmap = bm;
         mMovie = null;
         requestLayout();
         postInvalidate();
@@ -79,9 +83,26 @@ public class GifImageView extends ImageView {
         }
     }
 
-    public void setImagePath(String path, boolean touchable) {
+    public void setImageByPathLoader(String path, boolean touchable) {
+        setImageByPathLoader(path, touchable, GifImageLoader.Type.LIFO);
+    }
+    public void setImageByPathLoader(String path, boolean touchable, GifImageLoader.Type type) {
+        GifImageLoader.getInstance(3, type).loadImage(path, this, touchable);
+    }
+
+    public void setPath(String path, boolean touchable) {
         mPath = path;
         mTouchable = touchable;
+    }
+
+    public String getPath() {
+        return mPath;
+    }
+
+    public void setScale(int scale) {
+        defaultScale = scale;
+        requestLayout();
+        postInvalidate();
     }
 
     @Override
@@ -104,7 +125,6 @@ public class GifImageView extends ImageView {
             int movieWidth = mMovie.width();
             int movieHeight = mMovie.height();
             int defaultWidth = MeasureSpec.getSize(widthMeasureSpec);
-            float suitableScale = 2.5f;
             int width;
 
             int mode = MeasureSpec.getMode(widthMeasureSpec);
@@ -114,12 +134,12 @@ public class GifImageView extends ImageView {
                     break;
 
                 case MeasureSpec.AT_MOST:
-                    int suitableWidth = (int) (mMovie.width() * suitableScale);
+                    int suitableWidth = (int) (movieWidth * defaultScale);
                     width = suitableWidth < defaultWidth ? suitableWidth : defaultWidth;
                     break;
 
                 case MeasureSpec.UNSPECIFIED:
-                    width = (int) (mMovie.width() * suitableScale);
+                    width = (int) (movieWidth * defaultScale);
                     break;
 
                 default:
@@ -136,9 +156,45 @@ public class GifImageView extends ImageView {
             if (mode == MeasureSpec.EXACTLY) {
                 mMeasuredMovieHeight = MeasureSpec.getSize(heightMeasureSpec);
             }
-            mLeft = (mMeasuredMovieWidth - mMovie.width() * mScale) / 2f;
-            mTop = (mMeasuredMovieHeight - mMovie.height() * mScale) / 2f;
+            mLeft = (mMeasuredMovieWidth - movieWidth * mScale) / 2f;
+            mTop = (mMeasuredMovieHeight - movieHeight * mScale) / 2f;
             setMeasuredDimension(mMeasuredMovieWidth, mMeasuredMovieHeight);
+        } else if (mBitmap != null) {
+            int bitmapWidth = mBitmap.getWidth();
+            int bitmapHeight = mBitmap.getHeight();
+            int defaultWidth = MeasureSpec.getSize(widthMeasureSpec);
+            int width;
+
+            int mode = MeasureSpec.getMode(widthMeasureSpec);
+            switch (mode) {
+                case MeasureSpec.EXACTLY:
+                    width = defaultWidth;
+                    break;
+
+                case MeasureSpec.AT_MOST:
+                    int suitableWidth = (int) (bitmapWidth * defaultScale);
+                    width = suitableWidth < defaultWidth ? suitableWidth : defaultWidth;
+                    break;
+
+                case MeasureSpec.UNSPECIFIED:
+                    width = (int) (bitmapWidth * defaultScale);
+                    break;
+
+                default:
+                    width = 1;
+                    break;
+            }
+
+            int mMeasuredBitmapWidth;
+            int mMeasuredBitmapHeight;
+
+            mScale = (float) width / (float) bitmapWidth;
+            mMeasuredBitmapWidth = width;
+            mMeasuredBitmapHeight = (int) (bitmapHeight * mScale);
+            if (mode == MeasureSpec.EXACTLY) {
+                mMeasuredBitmapHeight = MeasureSpec.getSize(heightMeasureSpec);
+            }
+            setMeasuredDimension(mMeasuredBitmapWidth, mMeasuredBitmapHeight);
         }
     }
 
