@@ -3,6 +3,7 @@ package com.xmx.wenote.ChoosePhoto;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +19,8 @@ import java.util.ArrayList;
 
 public class BigPhotoActivity extends Activity {
     LinearLayout layout;
-    JazzyViewPager vp;
+    //JazzyViewPager vp;
+    ViewPager vp;
     GifImageView gif_view;
     String path;
     ArrayList<String> paths;
@@ -47,10 +49,11 @@ public class BigPhotoActivity extends Activity {
             flipFlag = true;
             paths = getIntent().getStringArrayListExtra("paths");
 
-            vp = new JazzyViewPager(this);
+            //vp = new JazzyViewPager(this);
+            vp = new ViewPager(this);
             vp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.MATCH_PARENT));
-            vp.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
+            //vp.setTransitionEffect(JazzyViewPager.TransitionEffect.Accordion);
             vp.setAdapter(new PagerAdapter() {
                 @Override
                 public boolean isViewFromObject(View arg0, Object arg1) {
@@ -77,7 +80,7 @@ public class BigPhotoActivity extends Activity {
                     BigGifImageLoader.getInstance(3, BigGifImageLoader.Type.LIFO).loadImage(paths.get(position), iv, false);
                     l.addView(iv);
                     container.addView(l);
-                    vp.setObjectForPosition(l, position);
+                    //vp.setObjectForPosition(l, position);
                     return l;
                 }
 

@@ -1,22 +1,25 @@
 package com.xmx.wenote;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.xmx.wenote.ChoosePhoto.entities.GifImageLoader;
-import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
+import com.xmx.wenote.ChoosePhoto.BigPhotoActivity;
+import com.xmx.wenote.ChoosePhoto.adapter.ShowAdapter;
 import com.xmx.wenote.Database.SQLManager;
 
 import java.util.ArrayList;
@@ -80,17 +83,38 @@ public class TimelineFragment extends Fragment {
                     l.setVerticalGravity(Gravity.CENTER);
                     sv.addView(l);
 
-                    for (int i = 0; i < photos.size(); ++i) {
-                        String path = photos.get(i);
-                        if (!path.isEmpty()) {
-                            GifImageView iv = new GifImageView(getContext());
-                            iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
-                            iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            iv.setImageResource(R.drawable.pic_loading);
-                            iv.setImageByPathLoader(path, true, GifImageLoader.Type.FIFO);
-                            l.addView(iv);
+                    GridView gv = new GridView(getContext());
+                    gv.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+
+                    DisplayMetrics dm = new DisplayMetrics();
+                    getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+                    float density = dm.density;
+                    gv.setHorizontalSpacing((int) (5 * density));
+                    gv.setColumnWidth((int) (100 * density));
+
+                    gv.setAdapter(new ShowAdapter(getContext(), photos));
+
+                    gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent(getActivity(), BigPhotoActivity.class);
+                            ShowAdapter a = (ShowAdapter) parent.getAdapter();
+                            ArrayList<String> paths = a.getPaths();
+                            intent.putExtra("paths", paths);
+                            intent.putExtra("index", position);
+                            startActivity(intent);
                         }
-                    }
+                    });
+
+                    int size = photos.size();
+
+                    int allWidth = (int) ((100 + 5) * density * size - 10);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            allWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    gv.setLayoutParams(params);
+                    gv.setNumColumns(size);
+
+                    l.addView(gv);
                 }
 
                 TextView timeTV = new TextView(getContext());
