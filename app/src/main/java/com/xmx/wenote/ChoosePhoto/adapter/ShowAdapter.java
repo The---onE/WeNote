@@ -51,7 +51,7 @@ public class ShowAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.iv.setImageByPathLoader(paths.get(position), false, GifImageLoader.Type.FIFO);
+        holder.iv.setImageByPathLoader(paths.get(position), GifImageLoader.Type.FIFO);
         return convertView;
     }
 

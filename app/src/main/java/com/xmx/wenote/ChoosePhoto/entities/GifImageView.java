@@ -22,8 +22,8 @@ import java.io.FileNotFoundException;
 public class GifImageView extends ImageView {
 
     private static final int DEFAULT_MOVIE_DURATION = 1000;
+    private static final float defaultScale = 2.5f;
     private String mPath;
-    private boolean mTouchable;
     private Movie mMovie;
     private Bitmap mBitmap;
     private long mMovieStart;
@@ -31,7 +31,6 @@ public class GifImageView extends ImageView {
     private float mLeft;
     private float mTop;
     private float mScale;
-    private float defaultScale = 2.5f;
 
     public GifImageView(Context context) {
         this(context, null);
@@ -49,12 +48,10 @@ public class GifImageView extends ImageView {
     }
 
     public void setImageMovie(Movie movie) {
-        if (movie != null) {
-            mMovie = movie;
-            mBitmap = null;
-            requestLayout();
-            postInvalidate();
-        }
+        mMovie = movie;
+        mBitmap = null;
+        requestLayout();
+        postInvalidate();
     }
 
     @Override
@@ -66,9 +63,8 @@ public class GifImageView extends ImageView {
         postInvalidate();
     }
 
-    public void setImageByPath(String path, boolean touchable) {
+    public void setImageByPath(String path) {
         mPath = path;
-        mTouchable = touchable;
         Movie movie = null;
         try {
             movie = Movie.decodeStream(new FileInputStream(path));
@@ -83,39 +79,20 @@ public class GifImageView extends ImageView {
         }
     }
 
-    public void setImageByPathLoader(String path, boolean touchable) {
-        setImageByPathLoader(path, touchable, GifImageLoader.Type.LIFO);
-    }
-    public void setImageByPathLoader(String path, boolean touchable, GifImageLoader.Type type) {
-        GifImageLoader.getInstance(3, type).loadImage(path, this, touchable);
+    public void setImageByPathLoader(String path) {
+        setImageByPathLoader(path, GifImageLoader.Type.LIFO);
     }
 
-    public void setPath(String path, boolean touchable) {
+    public void setImageByPathLoader(String path, GifImageLoader.Type type) {
+        GifImageLoader.getInstance(3, type).loadImage(path, this);
+    }
+
+    public void setPath(String path) {
         mPath = path;
-        mTouchable = touchable;
     }
 
     public String getPath() {
         return mPath;
-    }
-
-    public void setScale(int scale) {
-        defaultScale = scale;
-        requestLayout();
-        postInvalidate();
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                if (mTouchable && mPath != null) {
-                    Intent intent = new Intent(getContext(), BigPhotoActivity.class);
-                    intent.putExtra("path", mPath);
-                    getContext().startActivity(intent);
-                }
-        }
-        return mTouchable || super.onTouchEvent(event);
     }
 
     @Override
@@ -125,76 +102,71 @@ public class GifImageView extends ImageView {
             int movieWidth = mMovie.width();
             int movieHeight = mMovie.height();
             int defaultWidth = MeasureSpec.getSize(widthMeasureSpec);
-            int width;
+            int defaultHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-            int mode = MeasureSpec.getMode(widthMeasureSpec);
-            switch (mode) {
-                case MeasureSpec.EXACTLY:
-                    width = defaultWidth;
-                    break;
-
-                case MeasureSpec.AT_MOST:
-                    int suitableWidth = (int) (movieWidth * defaultScale);
-                    width = suitableWidth < defaultWidth ? suitableWidth : defaultWidth;
-                    break;
-
-                case MeasureSpec.UNSPECIFIED:
-                    width = (int) (movieWidth * defaultScale);
-                    break;
-
-                default:
-                    width = 1;
-                    break;
-            }
+            boolean widthFlag = ((float) movieWidth / defaultWidth) > ((float) movieHeight / defaultHeight);
 
             int mMeasuredMovieWidth;
             int mMeasuredMovieHeight;
 
-            mScale = (float) width / (float) movieWidth;
-            mMeasuredMovieWidth = width;
-            mMeasuredMovieHeight = (int) (movieHeight * mScale);
-            if (mode == MeasureSpec.EXACTLY) {
-                mMeasuredMovieHeight = MeasureSpec.getSize(heightMeasureSpec);
-            }
-            mLeft = (mMeasuredMovieWidth - movieWidth * mScale) / 2f;
-            mTop = (mMeasuredMovieHeight - movieHeight * mScale) / 2f;
-            setMeasuredDimension(mMeasuredMovieWidth, mMeasuredMovieHeight);
-        } else if (mBitmap != null) {
-            int bitmapWidth = mBitmap.getWidth();
-            int bitmapHeight = mBitmap.getHeight();
-            int defaultWidth = MeasureSpec.getSize(widthMeasureSpec);
-            int width;
+            int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+            int heightMode = MeasureSpec.getMode(widthMeasureSpec);
 
-            int mode = MeasureSpec.getMode(widthMeasureSpec);
-            switch (mode) {
+            switch (widthMode) {
                 case MeasureSpec.EXACTLY:
-                    width = defaultWidth;
+                    mMeasuredMovieWidth = defaultWidth;
                     break;
 
                 case MeasureSpec.AT_MOST:
-                    int suitableWidth = (int) (bitmapWidth * defaultScale);
-                    width = suitableWidth < defaultWidth ? suitableWidth : defaultWidth;
+                    int suitableWidth = (int) (movieWidth * defaultScale);
+                    mMeasuredMovieWidth = suitableWidth < defaultWidth ? suitableWidth : defaultWidth;
                     break;
 
                 case MeasureSpec.UNSPECIFIED:
-                    width = (int) (bitmapWidth * defaultScale);
+                    mMeasuredMovieWidth = (int) (movieWidth * defaultScale);
                     break;
 
                 default:
-                    width = 1;
+                    mMeasuredMovieWidth = 1;
                     break;
             }
 
-            int mMeasuredBitmapWidth;
-            int mMeasuredBitmapHeight;
+            switch (heightMode) {
+                case MeasureSpec.EXACTLY:
+                    mMeasuredMovieHeight = defaultHeight;
+                    break;
 
-            mScale = (float) width / (float) bitmapWidth;
-            mMeasuredBitmapWidth = width;
-            mMeasuredBitmapHeight = (int) (bitmapHeight * mScale);
-            if (mode == MeasureSpec.EXACTLY) {
-                mMeasuredBitmapHeight = MeasureSpec.getSize(heightMeasureSpec);
+                case MeasureSpec.AT_MOST:
+                    int suitableHeight = (int) (movieHeight * defaultScale);
+                    mMeasuredMovieHeight = suitableHeight < defaultHeight ? suitableHeight : defaultHeight;
+                    break;
+
+                case MeasureSpec.UNSPECIFIED:
+                    mMeasuredMovieHeight = (int) (movieHeight * defaultScale);
+                    break;
+
+                default:
+                    mMeasuredMovieHeight = 1;
+                    break;
             }
-            setMeasuredDimension(mMeasuredBitmapWidth, mMeasuredBitmapHeight);
+
+            if (widthFlag) {
+                mScale = (float) mMeasuredMovieWidth / (float) movieWidth;
+                mMeasuredMovieHeight = (int) (movieHeight * mScale);
+                if (heightMode == MeasureSpec.EXACTLY) {
+                    mMeasuredMovieHeight = defaultHeight;
+                }
+            } else {
+                mScale = (float) mMeasuredMovieHeight / (float) movieHeight;
+                mMeasuredMovieWidth = (int) (movieWidth * mScale);
+                if (widthMode == MeasureSpec.EXACTLY) {
+                    mMeasuredMovieWidth = defaultWidth;
+                }
+            }
+
+            mLeft = (mMeasuredMovieWidth - movieWidth * mScale) / 2f;
+            mTop = (mMeasuredMovieHeight - movieHeight * mScale) / 2f;
+            setMeasuredDimension(mMeasuredMovieWidth, mMeasuredMovieHeight);
         }
     }
 

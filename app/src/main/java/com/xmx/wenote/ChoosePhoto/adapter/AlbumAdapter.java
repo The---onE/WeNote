@@ -54,7 +54,7 @@ public class AlbumAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.iv.setImageByPathLoader(albumList.get(position).getBitList().get(0).getPath(), false);
+        holder.iv.setImageByPathLoader(albumList.get(position).getBitList().get(0).getPath());
         holder.tv.setText(albumList.get(position).getName() + "(" + albumList.get(position).getCount() + ")");
         return convertView;
     }

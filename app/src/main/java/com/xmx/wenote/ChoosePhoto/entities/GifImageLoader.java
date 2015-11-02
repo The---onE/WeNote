@@ -198,10 +198,10 @@ public class GifImageLoader {
      * @param path
      * @param imageView
      */
-    public void loadImage(final String path, final GifImageView imageView, final boolean touchable) {
+    public void loadImage(final String path, final GifImageView imageView) {
         // set tag
         imageView.setTag(path);
-        imageView.setPath(path, touchable);
+        imageView.setPath(path);
         // UI线程
         if (mHandler == null) {
             mHandler = new LoadImageHandler();

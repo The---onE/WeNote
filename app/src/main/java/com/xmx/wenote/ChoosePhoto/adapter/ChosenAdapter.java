@@ -51,7 +51,7 @@ public class ChosenAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.iv.setImageByPathLoader(photos.get(position).getPath(), false);
+        holder.iv.setImageByPathLoader(photos.get(position).getPath());
         return convertView;
     }
 }

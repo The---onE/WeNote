@@ -146,7 +146,7 @@ public class NoteFragment extends Fragment {
                 }
                 GifImageView iv = new GifImageView(getActivity());
                 iv.setImageResource(R.drawable.pic_loading);
-                iv.setImageByPathLoader(path, false);
+                iv.setImageByPathLoader(path);
                 iv.setLayoutParams(new LinearLayout.LayoutParams(width / 4, width / 4));
                 iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 iv.setOnClickListener(new View.OnClickListener() {

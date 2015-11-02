@@ -50,7 +50,7 @@ public class PhotoItem extends RelativeLayout implements Checkable {
     }
 
     public void setPath(String path) {
-        mImageView.setImageByPathLoader(path, false);
+        mImageView.setImageByPathLoader(path);
     }
 
 }
