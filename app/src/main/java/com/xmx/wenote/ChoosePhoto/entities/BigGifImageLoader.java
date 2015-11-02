@@ -29,7 +29,7 @@ public class BigGifImageLoader {
     }
 
     private class ImgBeanHolder {
-        GifImageView imageView;
+        BigGifImageView imageView;
         String path;
         Image image;
     }
@@ -179,7 +179,7 @@ public class BigGifImageLoader {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             ImgBeanHolder holder = (ImgBeanHolder) msg.obj;
-            GifImageView imageView = holder.imageView;
+            BigGifImageView imageView = holder.imageView;
             String path = holder.path;
             Image im = holder.image;
             if (imageView.getTag().toString().equals(path)) {
@@ -198,10 +198,10 @@ public class BigGifImageLoader {
      * @param path
      * @param imageView
      */
-    public void loadImage(final String path, final GifImageView imageView, final boolean touchable) {
+    public void loadImage(final String path, final BigGifImageView imageView) {
         // set tag
         imageView.setTag(path);
-        imageView.setPath(path, touchable);
+        imageView.setPath(path);
         // UI线程
         if (mHandler == null) {
             mHandler = new LoadImageHandler();

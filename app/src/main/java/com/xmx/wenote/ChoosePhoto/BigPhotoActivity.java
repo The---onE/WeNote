@@ -5,14 +5,12 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.xmx.wenote.ChoosePhoto.entities.BigGifImageLoader;
-import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
-import com.xmx.wenote.ChoosePhoto.entities.JazzyViewPager.JazzyViewPager;
+import com.xmx.wenote.ChoosePhoto.entities.BigGifImageView;
 import com.xmx.wenote.R;
 
 import java.util.ArrayList;
@@ -21,7 +19,7 @@ public class BigPhotoActivity extends Activity {
     LinearLayout layout;
     //JazzyViewPager vp;
     ViewPager vp;
-    GifImageView gif_view;
+    BigGifImageView gif_view;
     String path;
     ArrayList<String> paths;
     int index;
@@ -39,10 +37,10 @@ public class BigPhotoActivity extends Activity {
             flipFlag = false;
             path = getIntent().getStringExtra("path");
 
-            gif_view = new GifImageView(this);
+            gif_view = new BigGifImageView(this);
             gif_view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT));
-            BigGifImageLoader.getInstance(3, BigGifImageLoader.Type.LIFO).loadImage(path, gif_view, false);
+            gif_view.setImageByPathLoader(path);
 
             layout.addView(gif_view);
         } else {
@@ -73,11 +71,11 @@ public class BigPhotoActivity extends Activity {
                     l.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
                     l.setOrientation(LinearLayout.VERTICAL);
 
-                    GifImageView iv = new GifImageView(BigPhotoActivity.this);
+                    BigGifImageView iv = new BigGifImageView(BigPhotoActivity.this);
                     iv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT));
                     //iv.setImageByPath(paths.get(position), false);
-                    BigGifImageLoader.getInstance(3, BigGifImageLoader.Type.LIFO).loadImage(paths.get(position), iv, false);
+                    iv.setImageByPathLoader(paths.get(position));
                     l.addView(iv);
                     container.addView(l);
                     //vp.setObjectForPosition(l, position);
@@ -93,16 +91,5 @@ public class BigPhotoActivity extends Activity {
             vp.setCurrentItem(index);
         }
         //TODO
-    }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                finish();
-                break;
-        }
-        return super.onTouchEvent(event);
     }
 }
