@@ -201,7 +201,6 @@ public class BigGifImageLoader {
     public void loadImage(final String path, final BigGifImageView imageView) {
         // set tag
         imageView.setTag(path);
-        imageView.setPath(path);
         // UI线程
         if (mHandler == null) {
             mHandler = new LoadImageHandler();

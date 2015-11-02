@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.xmx.wenote.ChoosePhoto.entities.BigGifImageLoader;
 import com.xmx.wenote.ChoosePhoto.entities.BigGifImageView;
 import com.xmx.wenote.R;
 
@@ -38,8 +37,8 @@ public class BigPhotoActivity extends Activity {
             path = getIntent().getStringExtra("path");
 
             gif_view = new BigGifImageView(this);
-            gif_view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            gif_view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT));
             gif_view.setImageByPathLoader(path);
 
             layout.addView(gif_view);
@@ -66,14 +65,14 @@ public class BigPhotoActivity extends Activity {
                 @Override
                 public Object instantiateItem(ViewGroup container, int position) {
                     LinearLayout l = new LinearLayout(BigPhotoActivity.this);
-                    l.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                    l.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT));
                     l.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
                     l.setOrientation(LinearLayout.VERTICAL);
 
                     BigGifImageView iv = new BigGifImageView(BigPhotoActivity.this);
-                    iv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                    iv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT));
                     //iv.setImageByPath(paths.get(position), false);
                     iv.setImageByPathLoader(paths.get(position));
                     l.addView(iv);
