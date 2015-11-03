@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:gravity="start"
+    android:orientation="horizontal">
 
     <com.xmx.wenote.ChoosePhoto.entities.GifImageView
         android:id="@+id/album_item_image"
@@ -16,8 +16,9 @@
         android:id="@+id/album_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:ellipsize="end"
-        android:lines="2"
-        android:text="TextView" />
+        android:maxLines="2"
+        android:text="@string/hello_world" />
 
 </LinearLayout>

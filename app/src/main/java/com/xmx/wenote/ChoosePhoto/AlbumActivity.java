@@ -13,7 +13,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
+import android.widget.ListView;
 
 import com.xmx.wenote.ChoosePhoto.adapter.AlbumAdapter;
 import com.xmx.wenote.ChoosePhoto.entities.AlbumItem;
@@ -21,7 +21,7 @@ import com.xmx.wenote.ChoosePhoto.entities.PhotoInf;
 import com.xmx.wenote.R;
 
 public class AlbumActivity extends Activity {
-    private GridView albumGV;
+    private ListView albumGV;
     private List<AlbumItem> albumList;
 
     //设置获取图片的字段信息
@@ -38,7 +38,7 @@ public class AlbumActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cp_album_activity);
-        albumGV = (GridView) findViewById(R.id.album_gridview);
+        albumGV = (ListView) findViewById(R.id.album_listview);
         albumList = getPhotoAlbum();
         albumGV.setAdapter(new AlbumAdapter(albumList, this));
         albumGV.setOnItemClickListener(albumClickListener);
@@ -82,7 +82,6 @@ public class AlbumActivity extends Activity {
             if (!countMap.containsKey(dir_id)) {
                 pa = new AlbumItem();
                 pa.setName(dir);
-                pa.setBitmap(Integer.parseInt(id));
                 pa.getBitList().add(new PhotoInf(Integer.valueOf(id), path));
                 countMap.put(dir_id, pa);
             } else {

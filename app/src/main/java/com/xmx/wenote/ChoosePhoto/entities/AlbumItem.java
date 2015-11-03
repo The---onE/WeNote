@@ -7,7 +7,6 @@ import java.util.List;
 public class AlbumItem implements Serializable {
     private String name;   //相册名字
     private int count; //数量
-    private int bitmap;  // 相册第一张图片
 
     private List<PhotoInf> bitList = new ArrayList<>();
 
@@ -34,19 +33,5 @@ public class AlbumItem implements Serializable {
 
     public void increaseCount() {
         count++;
-    }
-
-    public int getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(int bitmap) {
-        this.bitmap = bitmap;
-    }
-
-    @Override
-    public String toString() {
-        return "PhotoAibum [name=" + name + ", count=" + count + ", bitmap="
-                + bitmap + ", bitList=" + bitList + "]";
     }
 }

@@ -95,6 +95,45 @@ public class GifImageView extends ImageView {
         return mPath;
     }
 
+    private int resolveActualSize(int desiredSize, int measureSpec) {
+        int result;
+        int maxSize = MeasureSpec.getSize(measureSpec);
+        int mode = MeasureSpec.getMode(measureSpec);
+        switch (mode) {
+            case MeasureSpec.EXACTLY:
+                result = maxSize;
+                break;
+            case MeasureSpec.AT_MOST:
+                result = Math.min(desiredSize, maxSize);
+                break;
+            case MeasureSpec.UNSPECIFIED:
+                result = desiredSize;
+                break;
+            default:
+                result = 1;
+                break;
+        }
+        return result;
+    }
+
+    private int resolveAdjustedSize(int desiredSize, int maxSize, int measureSpec) {
+        int result = desiredSize;
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+        switch (specMode) {
+            case MeasureSpec.UNSPECIFIED:
+                result = Math.min(desiredSize, maxSize);
+                break;
+            case MeasureSpec.AT_MOST:
+                result = Math.min(Math.min(desiredSize, specSize), maxSize);
+                break;
+            case MeasureSpec.EXACTLY:
+                result = specSize;
+                break;
+        }
+        return result;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -106,67 +145,65 @@ public class GifImageView extends ImageView {
 
             boolean widthFlag = ((float) movieWidth / defaultWidth) > ((float) movieHeight / defaultHeight);
 
-            int mMeasuredMovieWidth;
-            int mMeasuredMovieHeight;
-
-            int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-            int heightMode = MeasureSpec.getMode(widthMeasureSpec);
-
-            switch (widthMode) {
-                case MeasureSpec.EXACTLY:
-                    mMeasuredMovieWidth = defaultWidth;
-                    break;
-
-                case MeasureSpec.AT_MOST:
-                    int suitableWidth = (int) (movieWidth * defaultScale);
-                    mMeasuredMovieWidth = suitableWidth < defaultWidth ? suitableWidth : defaultWidth;
-                    break;
-
-                case MeasureSpec.UNSPECIFIED:
-                    mMeasuredMovieWidth = (int) (movieWidth * defaultScale);
-                    break;
-
-                default:
-                    mMeasuredMovieWidth = 1;
-                    break;
-            }
-
-            switch (heightMode) {
-                case MeasureSpec.EXACTLY:
-                    mMeasuredMovieHeight = defaultHeight;
-                    break;
-
-                case MeasureSpec.AT_MOST:
-                    int suitableHeight = (int) (movieHeight * defaultScale);
-                    mMeasuredMovieHeight = suitableHeight < defaultHeight ? suitableHeight : defaultHeight;
-                    break;
-
-                case MeasureSpec.UNSPECIFIED:
-                    mMeasuredMovieHeight = (int) (movieHeight * defaultScale);
-                    break;
-
-                default:
-                    mMeasuredMovieHeight = 1;
-                    break;
-            }
+            int actualWidth = resolveActualSize((int) (movieWidth * defaultScale), widthMeasureSpec);
+            int actualHeight = resolveActualSize((int) (movieHeight * defaultScale), heightMeasureSpec);
 
             if (widthFlag) {
-                mScale = (float) mMeasuredMovieWidth / (float) movieWidth;
-                mMeasuredMovieHeight = (int) (movieHeight * mScale);
-                if (heightMode == MeasureSpec.EXACTLY) {
-                    mMeasuredMovieHeight = defaultHeight;
-                }
+                mScale = (float) actualWidth / (float) movieWidth;
             } else {
-                mScale = (float) mMeasuredMovieHeight / (float) movieHeight;
-                mMeasuredMovieWidth = (int) (movieWidth * mScale);
-                if (widthMode == MeasureSpec.EXACTLY) {
-                    mMeasuredMovieWidth = defaultWidth;
-                }
+                mScale = (float) actualHeight / (float) movieHeight;
             }
 
-            mLeft = (mMeasuredMovieWidth - movieWidth * mScale) / 2f;
-            mTop = (mMeasuredMovieHeight - movieHeight * mScale) / 2f;
-            setMeasuredDimension(mMeasuredMovieWidth, mMeasuredMovieHeight);
+            int w = (int) (movieWidth * mScale);
+            int h = (int) (movieHeight * mScale);
+
+            boolean resizeWidth = MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.EXACTLY;
+            boolean resizeHeight = MeasureSpec.getMode(heightMeasureSpec) != MeasureSpec.EXACTLY;
+            float desiredAspect = (float) w / (float) h;
+
+            int widthSize;
+            int heightSize;
+
+            if (resizeWidth || resizeHeight) {
+                widthSize = resolveAdjustedSize(w, Integer.MAX_VALUE, widthMeasureSpec);
+                heightSize = resolveAdjustedSize(h, Integer.MAX_VALUE, heightMeasureSpec);
+
+                if (desiredAspect != 0.0f) {
+                    float actualAspect = (float) (widthSize) / (heightSize);
+                    if (Math.abs(actualAspect - desiredAspect) > 0.0000001) {
+                        boolean done = false;
+                        if (resizeWidth) {
+                            int newWidth = (int) (desiredAspect * (heightSize));
+                            if (!resizeHeight) {
+                                widthSize = resolveAdjustedSize(newWidth, Integer.MAX_VALUE, widthMeasureSpec);
+                            }
+                            if (newWidth <= widthSize) {
+                                widthSize = newWidth;
+                                done = true;
+                            }
+                        }
+                        if (!done && resizeHeight) {
+                            int newHeight = (int) ((widthSize) / desiredAspect);
+                            if (!resizeWidth) {
+                                heightSize = resolveAdjustedSize(newHeight, Integer.MAX_VALUE, heightMeasureSpec);
+                            }
+                            if (newHeight <= heightSize) {
+                                heightSize = newHeight;
+                            }
+                        }
+                    }
+                }
+            } else {
+                w = Math.max(w, getSuggestedMinimumWidth());
+                h = Math.max(h, getSuggestedMinimumHeight());
+
+                widthSize = resolveSizeAndState(w, widthMeasureSpec, 0);
+                heightSize = resolveSizeAndState(h, heightMeasureSpec, 0);
+            }
+
+            mLeft = (widthSize - w) / 2f;
+            mTop = (heightSize - h) / 2f;
+            setMeasuredDimension(widthSize, heightSize);
         }
     }
 
