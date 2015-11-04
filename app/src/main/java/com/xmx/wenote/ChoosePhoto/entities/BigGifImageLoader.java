@@ -174,7 +174,7 @@ public class BigGifImageLoader {
 
     }
 
-    class LoadImageHandler extends Handler {
+    static class LoadImageHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);

@@ -20,7 +20,8 @@
             android:listSelector="#50000000"
             android:numColumns="4"
             android:scrollbars="vertical"
-            android:verticalSpacing="2dp" />
+            android:verticalSpacing="2dp"
+            android:fastScrollEnabled="true" />
 
         <RelativeLayout
             android:id="@+id/chosen_layout"

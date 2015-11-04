@@ -148,7 +148,7 @@ public class GifImageLoader {
 
         // 获取应用程序最大可用内存
         int maxMemory = (int) Runtime.getRuntime().maxMemory();
-        int cacheSize = maxMemory / 8;
+        int cacheSize = maxMemory / 4;
         mLruCache = new LruCache<String, Image>(cacheSize) {
             @Override
             protected int sizeOf(String key, Image value) {
@@ -174,7 +174,7 @@ public class GifImageLoader {
 
     }
 
-    class LoadImageHandler extends Handler {
+    static class LoadImageHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
