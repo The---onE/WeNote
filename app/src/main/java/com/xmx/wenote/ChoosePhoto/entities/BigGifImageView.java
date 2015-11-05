@@ -1,19 +1,13 @@
 package com.xmx.wenote.ChoosePhoto.entities;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Movie;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 public class BigGifImageView extends GifImageView {
 
@@ -70,29 +64,6 @@ public class BigGifImageView extends GifImageView {
 
     public BigGifImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-    }
-
-    public void setImageByPath(String path) {
-        Movie movie = null;
-        try {
-            movie = Movie.decodeStream(new FileInputStream(path));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        if (movie != null) {
-            setImageMovie(movie);
-        } else {
-            setImageBitmap(BitmapFactory.decodeFile(path));
-        }
-    }
-
-    public void setImageByPathLoader(String path) {
-        setImageByPathLoader(path, GifImageLoader.Type.LIFO);
-    }
-
-    public void setImageByPathLoader(String path, GifImageLoader.Type type) {
-        GifImageLoader.getInstance(3, type).loadImage(path + "#", this);
     }
 
     @Override

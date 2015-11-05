@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.xmx.wenote.ChoosePhoto.AlbumActivity;
 import com.xmx.wenote.ChoosePhoto.BigPhotoActivity;
-import com.xmx.wenote.ChoosePhoto.entities.GifImageLoader;
 import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 import com.xmx.wenote.Database.SQLManager;
 

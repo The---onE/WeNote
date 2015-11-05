@@ -11,8 +11,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class GifImageView extends ImageView {
 
@@ -41,6 +41,9 @@ public class GifImageView extends ImageView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                .build();
+        ImageLoader.getInstance().init(config);
     }
 
     public void setImageMovie(Movie movie) {
@@ -59,12 +62,7 @@ public class GifImageView extends ImageView {
 
     public void setImageByPath(String path) {
         mPath = path;
-        Movie movie = null;
-        try {
-            movie = Movie.decodeStream(new FileInputStream(path));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        Movie movie = Movie.decodeFile(path);
 
         if (movie != null) {
             setImageMovie(movie);
@@ -74,11 +72,18 @@ public class GifImageView extends ImageView {
     }
 
     public void setImageByPathLoader(String path) {
-        setImageByPathLoader(path, GifImageLoader.Type.LIFO);
+        setImageByPathLoader(path, GifLoader.Type.LIFO);
     }
 
-    public void setImageByPathLoader(String path, GifImageLoader.Type type) {
-        GifImageLoader.getInstance(5, type).loadImage(path, this);
+    public void setImageByPathLoader(String path, GifLoader.Type type) {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, opts);
+        if (opts.outMimeType.equals("image/gif")) {
+            GifLoader.getInstance(5, type).loadImage(path, this);
+        } else {
+            ImageLoader.getInstance().displayImage("file://" + path, this);
+        }
     }
 
     public void setPath(String path) {
