@@ -2,42 +2,38 @@ package com.xmx.wenote.ChoosePhoto.entities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Movie;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-
-import com.xmx.wenote.ChoosePhoto.BigPhotoActivity;
-import com.xmx.wenote.R;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class GifImageView extends ImageView {
 
-    private static final int DEFAULT_MOVIE_DURATION = 1000;
-    private static final float defaultScale = 2.5f;
-    private String mPath;
-    private Movie mMovie;
-    private Bitmap mBitmap;
-    private long mMovieStart;
-    private int mCurrentAnimationTime = 0;
-    private float mLeft;
-    private float mTop;
-    private float mScale;
+    protected static final int DEFAULT_MOVIE_DURATION = 1000;
+
+    protected float customScale = 5f;
+    protected String mPath;
+    protected Movie mMovie;
+    protected Bitmap mBitmap;
+    protected long mMovieStart;
+    protected int mCurrentAnimationTime = 0;
+    protected float mLeft;
+    protected float mTop;
+    protected float mScale;
 
     public GifImageView(Context context) {
         this(context, null);
     }
 
     public GifImageView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.styleable.CustomTheme_gifViewStyle);
+        this(context, attrs, 0);
     }
 
     public GifImageView(Context context, AttributeSet attrs, int defStyle) {
@@ -50,8 +46,7 @@ public class GifImageView extends ImageView {
     public void setImageMovie(Movie movie) {
         mMovie = movie;
         mBitmap = null;
-        requestLayout();
-        postInvalidate();
+        setupMovie();
     }
 
     @Override
@@ -59,8 +54,7 @@ public class GifImageView extends ImageView {
         super.setImageBitmap(bm);
         mBitmap = bm;
         mMovie = null;
-        requestLayout();
-        postInvalidate();
+        setupBitmap();
     }
 
     public void setImageByPath(String path) {
@@ -84,7 +78,7 @@ public class GifImageView extends ImageView {
     }
 
     public void setImageByPathLoader(String path, GifImageLoader.Type type) {
-        GifImageLoader.getInstance(3, type).loadImage(path, this);
+        GifImageLoader.getInstance(5, type).loadImage(path, this);
     }
 
     public void setPath(String path) {
@@ -145,8 +139,8 @@ public class GifImageView extends ImageView {
 
             boolean widthFlag = ((float) movieWidth / defaultWidth) > ((float) movieHeight / defaultHeight);
 
-            int actualWidth = resolveActualSize((int) (movieWidth * defaultScale), widthMeasureSpec);
-            int actualHeight = resolveActualSize((int) (movieHeight * defaultScale), heightMeasureSpec);
+            int actualWidth = resolveActualSize((int) (movieWidth * customScale), widthMeasureSpec);
+            int actualHeight = resolveActualSize((int) (movieHeight * customScale), heightMeasureSpec);
 
             if (widthFlag) {
                 mScale = (float) actualWidth / (float) movieWidth;
@@ -255,4 +249,13 @@ public class GifImageView extends ImageView {
         }
     }
 
+    protected void setupMovie() {
+        requestLayout();
+        postInvalidate();
+    }
+
+    protected void setupBitmap() {
+        requestLayout();
+        postInvalidate();
+    }
 }
