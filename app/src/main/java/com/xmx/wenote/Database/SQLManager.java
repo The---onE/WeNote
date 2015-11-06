@@ -22,12 +22,12 @@ public class SQLManager {
     }
 
     private boolean openDatabase() {
-        String d = android.os.Environment.getExternalStorageDirectory() + "/WeNote";
+        String d = android.os.Environment.getExternalStorageDirectory() + "/WeNote/Database";
         File dir = new File(d);
         boolean flag = dir.exists() || dir.mkdirs();
 
         if (flag) {
-            String sqlFile = android.os.Environment.getExternalStorageDirectory() + "/WeNote/note.db";
+            String sqlFile = android.os.Environment.getExternalStorageDirectory() + "/WeNote/Database/note.db";
             File file = new File(sqlFile);
             database = SQLiteDatabase.openOrCreateDatabase(file, null);
             if (database == null)
@@ -55,51 +55,56 @@ public class SQLManager {
 
     private String insertPhotos(ArrayList<String> paths) {
         String photos = "";
-        for (String path : paths) {
-            ContentValues content = new ContentValues();
+        String d = android.os.Environment.getExternalStorageDirectory() + "/WeNote/Images";
+        File dir = new File(d);
+        boolean flag = dir.exists() || dir.mkdirs();
+        if (flag) {
+            for (String path : paths) {
+                ContentValues content = new ContentValues();
 
             /*ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Bitmap bitmap = BitmapFactory.decodeFile(path);
             bitmap.compress(Bitmap.CompressFormat.PNG, 20, baos);
             byte[] bytes = baos.toByteArray();*/
 
-            int id = 0;
-            String newPath = android.os.Environment.getExternalStorageDirectory() + "/WeNote/" + path.hashCode();
-            File newFile = new File(newPath);
-            if (newFile.exists()) {
-                Cursor cursor = database.rawQuery("select ID from PHOTOS where PHOTO=?", new String[]{newPath});
-                if (cursor.moveToFirst()) {
-                    id = cursor.getInt(0);
-                }
-                cursor.close();
-            }
-            if (id == 0) {
-                try {
-                    File photo = new File(path);
-                    if (photo.exists()) {
-                        InputStream is = new FileInputStream(path);
-                        FileOutputStream os = new FileOutputStream(newPath);
-                        byte[] buffer = new byte[1444];
-                        int count;
-                        while ((count = is.read(buffer)) != -1) {
-                            os.write(buffer, 0, count);
-                        }
-                        is.close();
+                int id = 0;
+                String newPath = android.os.Environment.getExternalStorageDirectory() + "/WeNote/Images/" + path.hashCode();
+                File newFile = new File(newPath);
+                if (newFile.exists()) {
+                    Cursor cursor = database.rawQuery("select ID from PHOTOS where PHOTO=?", new String[]{newPath});
+                    if (cursor.moveToFirst()) {
+                        id = cursor.getInt(0);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    cursor.close();
                 }
+                if (id == 0) {
+                    try {
+                        File photo = new File(path);
+                        if (photo.exists()) {
+                            InputStream is = new FileInputStream(path);
+                            FileOutputStream os = new FileOutputStream(newPath);
+                            byte[] buffer = new byte[1444];
+                            int count;
+                            while ((count = is.read(buffer)) != -1) {
+                                os.write(buffer, 0, count);
+                            }
+                            is.close();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-                content.put("PHOTO", newPath);
+                    content.put("PHOTO", newPath);
 
-                database.insert("PHOTOS", null, content);
+                    database.insert("PHOTOS", null, content);
 
-                Cursor cursor = database.rawQuery("select last_insert_rowid()", null);
-                cursor.moveToFirst();
-                id = cursor.getInt(0);
-                cursor.close();
+                    Cursor cursor = database.rawQuery("select last_insert_rowid()", null);
+                    cursor.moveToFirst();
+                    id = cursor.getInt(0);
+                    cursor.close();
+                }
+                photos = photos + id + "|";
             }
-            photos = photos + id + "|";
         }
         return photos;
     }

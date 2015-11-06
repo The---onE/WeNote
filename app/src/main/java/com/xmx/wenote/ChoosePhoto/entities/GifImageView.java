@@ -11,8 +11,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.utils.StorageUtils;
+
+import java.io.File;
 
 public class GifImageView extends ImageView {
 
@@ -41,7 +47,16 @@ public class GifImageView extends ImageView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
+
+        File cacheDir = StorageUtils.getOwnCacheDirectory(context, "WeNote/Cache");
+        int maxMemory = (int) Runtime.getRuntime().maxMemory();
+        int cacheSize = maxMemory / 4 ;
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                .threadPoolSize(5)
+                .diskCache(new UnlimitedDiskCache(cacheDir))
+                .diskCacheFileCount(100)
+                .memoryCache(new WeakMemoryCache())
+                .memoryCacheSize(cacheSize)
                 .build();
         ImageLoader.getInstance().init(config);
     }
@@ -82,7 +97,11 @@ public class GifImageView extends ImageView {
         if (opts.outMimeType.equals("image/gif")) {
             GifLoader.getInstance(5, type).loadImage(path, this);
         } else {
-            ImageLoader.getInstance().displayImage("file://" + path, this);
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cacheOnDisk(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .build();
+            ImageLoader.getInstance().displayImage("file://" + path, this, options);
         }
     }
 

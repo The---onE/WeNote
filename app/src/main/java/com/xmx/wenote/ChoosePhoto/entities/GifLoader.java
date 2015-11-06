@@ -136,7 +136,7 @@ public class GifLoader {
 
         // 获取应用程序最大可用内存
         int maxMemory = (int) Runtime.getRuntime().maxMemory();
-        int cacheSize = maxMemory / 3;
+        int cacheSize = maxMemory / 8;
         mLruCache = new LruCache<String, Movie>(cacheSize) {
             @Override
             protected int sizeOf(String key, Movie value) {
