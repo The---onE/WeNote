@@ -15,7 +15,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/title"
+                android:id="@+id/note_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -23,7 +23,7 @@
                 android:singleLine="true" />
 
             <EditText
-                android:id="@+id/text"
+                android:id="@+id/note_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -36,14 +36,14 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/photo_button_layout"
+                    android:id="@+id/note_photo_button_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/choose"
+                        android:id="@+id/note_choose"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"

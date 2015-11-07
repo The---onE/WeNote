@@ -91,6 +91,7 @@ public class GifImageView extends ImageView {
     }
 
     public void setImageByPathLoader(String path, GifLoader.Type type) {
+        setPath(path);
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, opts);

@@ -47,11 +47,11 @@ public class NoteFragment extends Fragment {
     }
 
     private String getTitle() {
-        return ((EditText) getActivity().findViewById(R.id.title)).getText().toString();
+        return ((EditText) getActivity().findViewById(R.id.note_title)).getText().toString();
     }
 
     private String getText() {
-        return ((EditText) getActivity().findViewById(R.id.text)).getText().toString();
+        return ((EditText) getActivity().findViewById(R.id.note_text)).getText().toString();
     }
 
     class NoteThread implements Runnable {
@@ -90,7 +90,7 @@ public class NoteFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Button choose = (Button) getActivity().findViewById(R.id.choose);
+        Button choose = (Button) getActivity().findViewById(R.id.note_choose);
         choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,14 +177,12 @@ public class NoteFragment extends Fragment {
                         layouts.clear();
                         images.clear();
                         paths.clear();
-                        ((LinearLayout) getActivity().findViewById(R.id.photo_button_layout)).removeView(clear);
+                        ((LinearLayout) getActivity().findViewById(R.id.note_photo_button_layout)).removeView(clear);
                         clear = null;
                     }
                 });
-                ((LinearLayout) getActivity().findViewById(R.id.photo_button_layout)).addView(clear);
+                ((LinearLayout) getActivity().findViewById(R.id.note_photo_button_layout)).addView(clear);
             }
         }
     }
-
-
 }

@@ -21,6 +21,9 @@ public class SQLManager {
         openDatabase();
     }
 
+    static final int NOTE = 0;
+    static final int PLAN = 1;
+
     private boolean openDatabase() {
         String d = android.os.Environment.getExternalStorageDirectory() + "/WeNote/Database";
         File dir = new File(d);
@@ -38,12 +41,15 @@ public class SQLManager {
                     "TITLE text not null, " +
                     "TEXT text, " +
                     "PHOTOS text, " +
-                    "TIME not null default(datetime('now', 'localtime')))";
+                    "TIME not null default(datetime('now', 'localtime')), " +
+                    "TYPE integer default(" + NOTE + ")" +
+                    ")";
             database.execSQL(createNoteSQL);
 
             String createPhotoSQL = "create table if not exists PHOTOS(" +
                     "ID integer not null primary key autoincrement, " +
-                    "PHOTO text not null)";
+                    "PHOTO text not null" +
+                    ")";
             database.execSQL(createPhotoSQL);
         }
         return database != null;
@@ -118,6 +124,25 @@ public class SQLManager {
         content.put("TEXT", text);
         String photosId = insertPhotos(paths);
         content.put("PHOTOS", photosId);
+        content.put("TYPE", NOTE);
+
+        database.insert("NOTE", null, content);
+
+        return true;
+    }
+
+    public boolean insertPlan(String title, String text, ArrayList<String> paths
+            , int year, int month, int day, int hour, int minute) {
+        if (!checkDatabase()) {
+            return false;
+        }
+        ContentValues content = new ContentValues();
+        content.put("TITLE", title);
+        content.put("TEXT", text);
+        String photosId = insertPhotos(paths);
+        content.put("PHOTOS", photosId);
+        content.put("TYPE", PLAN);
+        content.put("TIME", ""+year+"-"+month+"-"+day+" "+hour+":"+minute+":00");
 
         database.insert("NOTE", null, content);
 
