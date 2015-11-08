@@ -58,7 +58,16 @@ public class TimelineFragment extends Fragment {
                 ArrayList<String> photos = sqlManager.getPhotos(p);
                 Date date = new Date(cursor.getLong(4));
 
-                LinearLayout layout = new LinearLayout(getContext());
+                final LinearLayout layout = new LinearLayout(getContext());
+                layout.setId(id);
+                layout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), DetailActivity.class);
+                        i.putExtra("id", v.getId());
+                        startActivity(i);
+                    }
+                });
                 layout.setOrientation(LinearLayout.VERTICAL);
                 layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));

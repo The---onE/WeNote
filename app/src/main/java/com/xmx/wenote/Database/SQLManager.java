@@ -171,6 +171,13 @@ public class SQLManager {
         return database.rawQuery("select * from NOTE", null);
     }
 
+    public Cursor selectById(int id) {
+        if (!checkDatabase()) {
+            return null;
+        }
+        return database.rawQuery("select * from NOTE where ID=" + id, null);
+    }
+
     public ArrayList<String> getPhotos(String idsString) {
         if (!checkDatabase()) {
             return null;
