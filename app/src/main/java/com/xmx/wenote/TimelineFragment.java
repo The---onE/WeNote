@@ -22,7 +22,10 @@ import com.xmx.wenote.ChoosePhoto.BigPhotoActivity;
 import com.xmx.wenote.ChoosePhoto.adapter.ShowAdapter;
 import com.xmx.wenote.Database.SQLManager;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by The_onE on 2015/10/11.
@@ -53,7 +56,7 @@ public class TimelineFragment extends Fragment {
                 String text = cursor.getString(2);
                 String p = cursor.getString(3);
                 ArrayList<String> photos = sqlManager.getPhotos(p);
-                String time = cursor.getString(4);
+                Date date = new Date(cursor.getLong(4));
 
                 LinearLayout layout = new LinearLayout(getContext());
                 layout.setOrientation(LinearLayout.VERTICAL);
@@ -118,7 +121,8 @@ public class TimelineFragment extends Fragment {
                 }
 
                 TextView timeTV = new TextView(getContext());
-                timeTV.setText(time);
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                timeTV.setText(df.format(date));
                 timeTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
                 layout.addView(timeTV);

@@ -27,6 +27,7 @@ import com.xmx.wenote.ChoosePhoto.entities.GifImageView;
 import com.xmx.wenote.Database.SQLManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by The_onE on 2015/10/11.
@@ -77,6 +78,7 @@ public class PlanFragment extends Fragment {
             }
         });
     }
+
     private String getTitle() {
         return ((EditText) getActivity().findViewById(R.id.plan_title)).getText().toString();
     }
@@ -89,13 +91,16 @@ public class PlanFragment extends Fragment {
         @Override
         public void run() {
             DatePicker date = (DatePicker) getActivity().findViewById(R.id.plan_date);
-            int year = date.getYear();
+            int year = date.getYear() - 1900;
             int month = date.getMonth();
             int day = date.getDayOfMonth();
             TimePicker time = (TimePicker) getActivity().findViewById(R.id.plan_time);
             int hour = time.getCurrentHour();
             int minute = time.getCurrentMinute();
-            boolean flag = sqlManager.insertPlan(getTitle(), getText(), paths, year, month, day, hour, minute);
+            Date d = new Date(year, month, day);
+            d.setHours(hour);
+            d.setMinutes(minute);
+            boolean flag = sqlManager.insertPlan(getTitle(), getText(), paths, d);
             Message msg = Message.obtain();
             Bundle b = new Bundle();
             b.putBoolean("flag", flag);

@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by The_onE on 2015/10/23.
@@ -41,7 +42,7 @@ public class SQLManager {
                     "TITLE text not null, " +
                     "TEXT text, " +
                     "PHOTOS text, " +
-                    "TIME not null default(datetime('now', 'localtime')), " +
+                    "TIME integer not null default(0), " +
                     "TYPE integer default(" + NOTE + ")" +
                     ")";
             database.execSQL(createNoteSQL);
@@ -125,6 +126,8 @@ public class SQLManager {
         String photosId = insertPhotos(paths);
         content.put("PHOTOS", photosId);
         content.put("TYPE", NOTE);
+        Date date = new Date(System.currentTimeMillis());
+        content.put("TIME", date.getTime());
 
         database.insert("NOTE", null, content);
 
@@ -132,7 +135,7 @@ public class SQLManager {
     }
 
     public boolean insertPlan(String title, String text, ArrayList<String> paths
-            , int year, int month, int day, int hour, int minute) {
+            , Date date) {
         if (!checkDatabase()) {
             return false;
         }
@@ -142,7 +145,7 @@ public class SQLManager {
         String photosId = insertPhotos(paths);
         content.put("PHOTOS", photosId);
         content.put("TYPE", PLAN);
-        content.put("TIME", ""+year+"-"+month+"-"+day+" "+hour+":"+minute+":00");
+        content.put("TIME", date.getTime());
 
         database.insert("NOTE", null, content);
 
