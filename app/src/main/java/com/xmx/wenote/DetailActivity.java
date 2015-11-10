@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class DetailActivity extends Activity {
+    private String title;
+    private String text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +41,8 @@ public class DetailActivity extends Activity {
         if (cursor.moveToFirst()) {
             LinearLayout layout = (LinearLayout) findViewById(R.id.detail_layout);
 
-            String title = cursor.getString(1);
-            String text = cursor.getString(2);
+            title = cursor.getString(1);
+            text = cursor.getString(2);
             String p = cursor.getString(3);
             ArrayList<String> photos = sqlManager.getPhotos(p);
             Date date = new Date(cursor.getLong(4));
@@ -49,6 +52,23 @@ public class DetailActivity extends Activity {
 
             TextView textTV = (TextView) findViewById(R.id.detail_text);
             textTV.setText(text);
+
+            TextView timeTV = (TextView) findViewById(R.id.detail_time);
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            timeTV.setText(df.format(date));
+
+            Button share = (Button) findViewById(R.id.detail_share);
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Share");
+                    intent.putExtra(Intent.EXTRA_TEXT, title);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(Intent.createChooser(intent, getTitle()));
+                }
+            });
 
             if (photos != null) {
                 WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -99,13 +119,6 @@ public class DetailActivity extends Activity {
 
                 l.addView(gv);
             }
-
-            TextView timeTV = new TextView(this);
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            timeTV.setText(df.format(date));
-            timeTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
-            layout.addView(timeTV);
         }
     }
 }

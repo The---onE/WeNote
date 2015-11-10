@@ -18,5 +18,19 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/loading"
+        android:id="@+id/detail_time" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/loading"
         android:id="@+id/detail_text" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/share"
+        android:id="@+id/detail_share"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
