@@ -80,9 +80,6 @@ public class TimelineFragment extends Fragment {
                 layout.addView(titleTV);
 
                 if (photos != null) {
-                    WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-                    int width = wm.getDefaultDisplay().getWidth();
-
                     HorizontalScrollView sv = new HorizontalScrollView(getContext());
                     sv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT));

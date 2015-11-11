@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.DisplayMetrics;
@@ -21,6 +22,7 @@ import com.xmx.wenote.ChoosePhoto.BigPhotoActivity;
 import com.xmx.wenote.ChoosePhoto.adapter.ShowAdapter;
 import com.xmx.wenote.Database.SQLManager;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import java.util.Date;
 public class DetailActivity extends Activity {
     private String title;
     private String text;
+    private ArrayList<String> photos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class DetailActivity extends Activity {
             title = cursor.getString(1);
             text = cursor.getString(2);
             String p = cursor.getString(3);
-            ArrayList<String> photos = sqlManager.getPhotos(p);
+            photos = sqlManager.getPhotos(p);
             Date date = new Date(cursor.getLong(4));
 
             TextView titleTV = (TextView) findViewById(R.id.detail_title);
@@ -62,18 +65,23 @@ public class DetailActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.setType("text/plain");
+                    intent.setType("image/*");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "Share");
-                    intent.putExtra(Intent.EXTRA_TEXT, title);
+                    intent.putExtra(Intent.EXTRA_TEXT, text);
+                    if (photos != null) {
+                        for (String path : photos) {
+                            File f = new File(path);
+                            Uri uri = Uri.fromFile(f);
+                            intent.putExtra(Intent.EXTRA_STREAM, uri);
+                        }
+                    }
+
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(Intent.createChooser(intent, getTitle()));
                 }
             });
 
             if (photos != null) {
-                WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-                int width = wm.getDefaultDisplay().getWidth();
-
                 HorizontalScrollView sv = new HorizontalScrollView(this);
                 sv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
