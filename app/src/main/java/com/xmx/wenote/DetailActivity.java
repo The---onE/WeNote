@@ -64,18 +64,34 @@ public class DetailActivity extends Activity {
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.setType("image/*");
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "Share");
-                    intent.putExtra(Intent.EXTRA_TEXT, text);
+                    Intent intent;
                     if (photos != null) {
-                        for (String path : photos) {
-                            File f = new File(path);
+                        if (photos.size() > 1) {
+                            intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                            intent.setType("image/*");
+                            ArrayList<Uri> uris = new ArrayList<>();
+                            for (String path : photos) {
+                                File f = new File(path);
+                                Uri uri = Uri.fromFile(f);
+                                uris.add(uri);
+                            }
+                            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                        } else {
+                            intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("image/*");
+                            File f = new File(photos.get(0));
                             Uri uri = Uri.fromFile(f);
                             intent.putExtra(Intent.EXTRA_STREAM, uri);
                         }
                     }
+                    else {
+                        intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("text/plain");
+                    }
 
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "share");
+                    intent.putExtra(Intent.EXTRA_TEXT, text);
+                    intent.putExtra(Intent.EXTRA_TITLE, title);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(Intent.createChooser(intent, getTitle()));
                 }
