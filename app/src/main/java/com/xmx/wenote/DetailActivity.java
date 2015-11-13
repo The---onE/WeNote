@@ -66,23 +66,15 @@ public class DetailActivity extends Activity {
                 public void onClick(View v) {
                     Intent intent;
                     if (photos != null) {
-                        if (photos.size() > 1) {
-                            intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                            intent.setType("image/*");
-                            ArrayList<Uri> uris = new ArrayList<>();
-                            for (String path : photos) {
-                                File f = new File(path);
-                                Uri uri = Uri.fromFile(f);
-                                uris.add(uri);
-                            }
-                            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                        } else {
-                            intent = new Intent(Intent.ACTION_SEND);
-                            intent.setType("image/*");
-                            File f = new File(photos.get(0));
+                        intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                        intent.setType("image/*");
+                        ArrayList<Uri> uris = new ArrayList<>();
+                        for (String path : photos) {
+                            File f = new File(path);
                             Uri uri = Uri.fromFile(f);
-                            intent.putExtra(Intent.EXTRA_STREAM, uri);
+                            uris.add(uri);
                         }
+                        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                     }
                     else {
                         intent = new Intent(Intent.ACTION_SEND);
