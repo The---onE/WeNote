@@ -47,7 +47,7 @@ public class TimelineFragment extends Fragment {
 
         LinearLayout parent = (LinearLayout) getActivity().findViewById(R.id.layout);
 
-        Cursor cursor = sqlManager.getCursor();
+        Cursor cursor = sqlManager.selectAll();
         if (cursor.moveToLast()) {
             do {
                 //ID TITLE TEXT PHOTO TIME

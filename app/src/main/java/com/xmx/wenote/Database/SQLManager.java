@@ -25,6 +25,8 @@ public class SQLManager {
     static final int NOTE = 0;
     static final int PLAN = 1;
 
+    static final long dayTime = 1000 * 60 * 60 * 24;
+
     private boolean openDatabase() {
         String d = android.os.Environment.getExternalStorageDirectory() + "/WeNote/Database";
         File dir = new File(d);
@@ -134,8 +136,7 @@ public class SQLManager {
         return true;
     }
 
-    public boolean insertPlan(String title, String text, ArrayList<String> paths
-            , Date date) {
+    public boolean insertPlan(String title, String text, ArrayList<String> paths, Date date) {
         if (!checkDatabase()) {
             return false;
         }
@@ -164,7 +165,7 @@ public class SQLManager {
     }
 
     //ID TITLE TEXT PHOTO TIME
-    public Cursor getCursor() {
+    public Cursor selectAll() {
         if (!checkDatabase()) {
             return null;
         }
@@ -176,6 +177,20 @@ public class SQLManager {
             return null;
         }
         return database.rawQuery("select * from NOTE where ID=" + id, null);
+    }
+
+    public Cursor selectByDate(Date date) {
+        if (!checkDatabase()) {
+            return null;
+        }
+        long time = date.getTime();
+        time = time - (time % dayTime);
+        return database.rawQuery("select * from NOTE where TIME-(TIME%" + dayTime + ")=" + time, null);
+    }
+
+    public Cursor selectByDate(int year, int month, int day) {
+        Date date = new Date(year, month, day);
+        return selectByDate(date);
     }
 
     public ArrayList<String> getPhotos(String idsString) {
