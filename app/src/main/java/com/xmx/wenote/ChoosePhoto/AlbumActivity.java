@@ -76,18 +76,17 @@ public class AlbumActivity extends Activity {
         cursor.moveToNext();
         while (cursor.moveToPrevious()) {
             String path = cursor.getString(1);
-            String id = cursor.getString(3);
             String dir_id = cursor.getString(4);
             String dir = cursor.getString(5);
             if (!countMap.containsKey(dir_id)) {
                 pa = new AlbumItem();
                 pa.setName(dir);
-                pa.getBitList().add(new PhotoInf(Integer.valueOf(id), path));
+                pa.getBitList().add(new PhotoInf(path));
                 countMap.put(dir_id, pa);
             } else {
                 pa = countMap.get(dir_id);
                 pa.increaseCount();
-                pa.getBitList().add(new PhotoInf(Integer.valueOf(id), path));
+                pa.getBitList().add(new PhotoInf(path));
             }
         }
         cursor.close();

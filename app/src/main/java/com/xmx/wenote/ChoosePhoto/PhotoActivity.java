@@ -24,12 +24,10 @@ public class PhotoActivity extends Activity {
     private GridView chosen_gridview;
     private AlbumItem album;
     private PhotoAdapter adapter;
-    private ChosenAdapter chosen_adapter;
 
     private ArrayList<PhotoInf> chosen = new ArrayList<>();
 
     private ArrayList<String> paths = new ArrayList<>();
-    private ArrayList<String> ids = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +45,11 @@ public class PhotoActivity extends Activity {
                 PhotoInf gridItem = album.getBitList().get(position);
                 if (gridItem.isSelect()) {
                     gridItem.setSelect(false);
-                    ids.remove(gridItem.getPhotoID() + "");
                     paths.remove(gridItem.getPath());
                     chosen.remove(gridItem);
                     processChosen(false);
                 } else {
                     gridItem.setSelect(true);
-                    ids.add(gridItem.getPhotoID() + "");
                     paths.add(gridItem.getPath());
                     chosen.add(gridItem);
                     processChosen(true);
@@ -63,7 +59,7 @@ public class PhotoActivity extends Activity {
         });
 
         chosen_gridview = (GridView) findViewById(R.id.chosen_gridview);
-        chosen_adapter = new ChosenAdapter(this, chosen);
+        ChosenAdapter chosen_adapter = new ChosenAdapter(this, chosen);
         chosen_gridview.setAdapter(chosen_adapter);
         chosen_gridview.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -73,8 +69,6 @@ public class PhotoActivity extends Activity {
                 intent.putExtra("paths", paths);
                 intent.putExtra("index", position);
                 startActivity(intent);
-
-                //TODO
             }
         });
 
