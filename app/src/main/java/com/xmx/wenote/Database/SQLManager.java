@@ -165,6 +165,21 @@ public class SQLManager {
     }
 
     //ID TITLE TEXT PHOTO TIME
+    public Cursor selectAllOrderByIndex() {
+        if (!checkDatabase()) {
+            return null;
+        }
+        return database.rawQuery("select * from NOTE order by ID desc", null);
+    }
+
+    public int getCount() {
+        if (!checkDatabase()) {
+            return -1;
+        }
+        Cursor c = selectAll();
+        return c.getCount();
+    }
+
     public Cursor selectAll() {
         if (!checkDatabase()) {
             return null;
@@ -172,11 +187,25 @@ public class SQLManager {
         return database.rawQuery("select * from NOTE", null);
     }
 
-    public Cursor selectById(int id) {
+    public Cursor selectById(long id) {
         if (!checkDatabase()) {
             return null;
         }
         return database.rawQuery("select * from NOTE where ID=" + id, null);
+    }
+
+    public Cursor selectTopOrderByTime(int count) {
+        if (!checkDatabase()) {
+            return null;
+        }
+        return database.rawQuery("select * from NOTE order by TIME desc limit " + count, null);
+    }
+
+    public Cursor selectOneNoteOrderByTime(int pos) {
+        if (!checkDatabase()) {
+            return null;
+        }
+        return database.rawQuery("select * from NOTE order by TIME desc limit " + pos + ", 1", null);
     }
 
     public Cursor selectByDate(Date date) {

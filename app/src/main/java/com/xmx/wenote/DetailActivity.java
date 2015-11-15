@@ -1,16 +1,13 @@
 package com.xmx.wenote;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -38,7 +35,7 @@ public class DetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_activity);
 
-        int id = getIntent().getIntExtra("id", -1);
+        long id = getIntent().getLongExtra("id", -1);
         SQLManager sqlManager = new SQLManager();
         Cursor cursor = sqlManager.selectById(id);
         if (cursor.moveToFirst()) {
