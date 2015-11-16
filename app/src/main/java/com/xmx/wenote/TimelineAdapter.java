@@ -7,9 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.GridView;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,11 +26,67 @@ import java.util.Map;
 /**
  * Created by The_onE on 2015/11/15.
  */
-public class TimelineAdapter extends BaseAdapter {
+public class TimelineAdapter extends BaseExpandableListAdapter {
     Context context;
     private SQLManager database = new SQLManager();
     private float density;
     Map<Integer, Integer> ids = new HashMap<>();
+
+    @Override
+    public int getGroupCount() {
+        return 1;
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        return getCount();
+    }
+
+    @Override
+    public Object getGroup(int groupPosition) {
+        return null;
+    }
+
+    @Override
+    public Object getChild(int groupPosition, int childPosition) {
+        return getItem(childPosition);
+    }
+
+    @Override
+    public long getGroupId(int groupPosition) {
+        return 0;
+    }
+
+    @Override
+    public long getChildId(int groupPosition, int childPosition) {
+        return getItemId(childPosition);
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return false;
+    }
+
+    @Override
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.timeline_group, null);
+        }
+        TextView text = (TextView) convertView.findViewById(R.id.timeline_group);
+        text.setText(" ");
+
+        return convertView;
+    }
+
+    @Override
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        return getView(childPosition, convertView, parent);
+    }
+
+    @Override
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
+        return true;
+    }
 
     static class ViewHolder {
         TextView titleTV;
@@ -44,22 +99,18 @@ public class TimelineAdapter extends BaseAdapter {
         this.density = density;
     }
 
-    @Override
     public int getCount() {
         return database.getCount();
     }
 
-    @Override
     public Object getItem(int position) {
         return null;
     }
 
-    @Override
     public long getItemId(int position) {
         return ids.get(position);
     }
 
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
@@ -89,9 +140,6 @@ public class TimelineAdapter extends BaseAdapter {
 
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             holder.timeTV.setText(df.format(date));
-
-            HorizontalScrollView scroll = (HorizontalScrollView) convertView.findViewById(R.id.timeline_scroll);
-
 
             if (photos != null) {
                 holder.photos.setHorizontalSpacing((int) (5 * density));

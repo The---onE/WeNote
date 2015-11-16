@@ -8,8 +8,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 
 /**
  * Created by The_onE on 2015/10/11.
@@ -25,18 +24,21 @@ public class TimelineFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListView list = (ListView) getActivity().findViewById(R.id.timeline_listview);
+        ExpandableListView list = (ExpandableListView) getActivity().findViewById(R.id.timeline_listview);
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         TimelineAdapter adapter = new TimelineAdapter(getContext(), dm.density);
         list.setAdapter(adapter);
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        list.expandGroup(0);
+
+        list.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(view.getContext(), DetailActivity.class);
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                Intent i = new Intent(v.getContext(), DetailActivity.class);
                 i.putExtra("id", id);
                 startActivity(i);
+                return true;
             }
         });
     }
