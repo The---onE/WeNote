@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.xmx.wenote.ChoosePhoto.entities.BigGifImageView;
@@ -63,19 +64,65 @@ public class BigPhotoActivity extends Activity {
                 }
 
                 @Override
-                public Object instantiateItem(ViewGroup container, int position) {
+                public Object instantiateItem (ViewGroup container, int position) {
                     LinearLayout l = new LinearLayout(BigPhotoActivity.this);
                     l.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT));
                     l.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
                     l.setOrientation(LinearLayout.VERTICAL);
 
-                    BigGifImageView iv = new BigGifImageView(BigPhotoActivity.this);
+                    final BigGifImageView iv = new BigGifImageView(BigPhotoActivity.this);
                     iv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.MATCH_PARENT));
-                    //iv.setImageByPath(paths.get(position), false);
-                    iv.setImageByPathLoader(paths.get(position));
+                            LinearLayout.LayoutParams.MATCH_PARENT, 1));
+                    boolean flag = iv.setImageByPathLoader(paths.get(position));
                     l.addView(iv);
+
+                    if (flag) {
+                        LinearLayout buttonLayout = new LinearLayout(BigPhotoActivity.this);
+                        buttonLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT, 9));
+                        buttonLayout.setGravity(Gravity.CENTER);
+                        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                        Button upend = new Button(BigPhotoActivity.this);
+                        upend.setText("倒放");
+                        upend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        upend.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                iv.upend();
+                            }
+                        });
+                        buttonLayout.addView(upend);
+
+                        Button pause = new Button(BigPhotoActivity.this);
+                        pause.setText("暂停");
+                        pause.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        pause.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                iv.pause();
+                            }
+                        });
+                        buttonLayout.addView(pause);
+
+                        Button play = new Button(BigPhotoActivity.this);
+                        play.setText("播放");
+                        play.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        play.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                iv.play();
+                            }
+                        });
+                        buttonLayout.addView(play);
+
+                        l.addView(buttonLayout);
+                    }
+
                     container.addView(l);
                     //vp.setObjectForPosition(l, position);
                     return l;
@@ -89,6 +136,5 @@ public class BigPhotoActivity extends Activity {
             layout.addView(vp);
             vp.setCurrentItem(index);
         }
-        //TODO
     }
 }

@@ -30,9 +30,17 @@ public class GifImageView extends ImageView {
     protected Bitmap mBitmap;
     protected long mMovieStart;
     protected int mCurrentAnimationTime = 0;
+    protected long mOffset = 0;
+    protected int mDuration;
+    protected long mLatestTime;
     protected float mLeft;
     protected float mTop;
     protected float mScale;
+
+    static final int PLAY = 0;
+    static final int PAUSE = 1;
+    static final int UPEND = -1;
+    protected int mStatus = PLAY;
 
     public GifImageView(Context context) {
         this(context, null);
@@ -64,6 +72,12 @@ public class GifImageView extends ImageView {
     public void setImageMovie(Movie movie) {
         mMovie = movie;
         mBitmap = null;
+
+        mDuration = mMovie.duration();
+        if (mDuration == 0) {
+            mDuration = DEFAULT_MOVIE_DURATION;
+        }
+        mLatestTime = android.os.SystemClock.uptimeMillis();
         setupMovie();
     }
 
@@ -86,23 +100,25 @@ public class GifImageView extends ImageView {
         }
     }
 
-    public void setImageByPathLoader(String path) {
-        setImageByPathLoader(path, GifLoader.Type.LIFO);
+    public boolean setImageByPathLoader(String path) {
+        return setImageByPathLoader(path, GifLoader.Type.LIFO);
     }
 
-    public void setImageByPathLoader(String path, GifLoader.Type type) {
+    public boolean setImageByPathLoader(String path, GifLoader.Type type) {
         setPath(path);
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, opts);
         if (opts.outMimeType.equals("image/gif")) {
             GifLoader.getInstance(5, type).loadImage(path, this);
+            return true;
         } else {
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                     .cacheOnDisk(true)
                     .bitmapConfig(Bitmap.Config.RGB_565)
                     .build();
             ImageLoader.getInstance().displayImage("file://" + path, this, options);
+            return false;
         }
     }
 
@@ -253,13 +269,25 @@ public class GifImageView extends ImageView {
             if (mMovieStart == 0) {
                 mMovieStart = now;
             }
-            // 取出动画的时长
-            int dur = mMovie.duration();
-            if (dur == 0) {
-                dur = DEFAULT_MOVIE_DURATION;
+
+            switch (mStatus) {
+                case PAUSE:
+                    mOffset += now - mLatestTime;
+                    break;
+
+                case UPEND:
+                    mOffset += (now - mLatestTime) * 2;
+                    break;
+
+                default:
+                    break;
             }
-            // 算出需要显示第几帧
-            mCurrentAnimationTime = (int) ((now - mMovieStart) % dur);
+            mLatestTime = now;
+            long time = now - mMovieStart - mOffset;
+            mCurrentAnimationTime = (int) (time % mDuration);
+            if (time < 0) {
+                mCurrentAnimationTime += mDuration;
+            }
         }
     }
 
@@ -282,5 +310,17 @@ public class GifImageView extends ImageView {
     protected void setupBitmap() {
         requestLayout();
         postInvalidate();
+    }
+
+    public void play() {
+        mStatus = PLAY;
+    }
+
+    public void pause() {
+        mStatus = PAUSE;
+    }
+
+    public void upend() {
+        mStatus = UPEND;
     }
 }
