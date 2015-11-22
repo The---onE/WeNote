@@ -109,6 +109,9 @@ public class GifImageView extends ImageView {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, opts);
+        if (opts.outMimeType == null) {
+            return false;
+        }
         if (opts.outMimeType.equals("image/gif")) {
             GifLoader.getInstance(5, type).loadImage(path, this);
             return true;
