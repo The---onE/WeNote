@@ -17,16 +17,21 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:configChanges="orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChoosePhoto.PhotoActivity" />
+        <activity android:name=".ChoosePhoto.PhotoActivity"
+            android:configChanges="orientation|screenSize" />
+
         <activity android:name=".ChoosePhoto.AlbumActivity" />
-        <activity android:name=".ChoosePhoto.BigPhotoActivity" />
+
+        <activity android:name=".ChoosePhoto.BigPhotoActivity"
+            android:configChanges="orientation|screenSize" />
         <activity android:name=".DetailActivity" >
         </activity>
     </application>

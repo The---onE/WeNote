@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Movie;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -70,23 +71,27 @@ public class GifImageView extends ImageView {
     }
 
     public void setImageMovie(Movie movie) {
-        mMovie = movie;
-        mBitmap = null;
+        if (movie != null) {
+            mMovie = movie;
+            mBitmap = null;
 
-        mDuration = mMovie.duration();
-        if (mDuration == 0) {
-            mDuration = DEFAULT_MOVIE_DURATION;
+            mDuration = mMovie.duration();
+            if (mDuration == 0) {
+                mDuration = DEFAULT_MOVIE_DURATION;
+            }
+            mLatestTime = android.os.SystemClock.uptimeMillis();
+            setupMovie();
         }
-        mLatestTime = android.os.SystemClock.uptimeMillis();
-        setupMovie();
     }
 
     @Override
     public void setImageBitmap(Bitmap bm) {
         super.setImageBitmap(bm);
-        mBitmap = bm;
-        mMovie = null;
-        setupBitmap();
+        if (bm != null) {
+            mBitmap = bm;
+            mMovie = null;
+            setupBitmap();
+        }
     }
 
     public void setImageByPath(String path) {
@@ -123,6 +128,18 @@ public class GifImageView extends ImageView {
             ImageLoader.getInstance().displayImage("file://" + path, this, options);
             return false;
         }
+    }
+
+    @Override
+    public void setImageDrawable(Drawable drawable) {
+        super.setImageDrawable(drawable);
+        mMovie = null;
+    }
+
+    @Override
+    public void setImageResource(int resId) {
+        super.setImageResource(resId);
+        mMovie = null;
     }
 
     public void setPath(String path) {

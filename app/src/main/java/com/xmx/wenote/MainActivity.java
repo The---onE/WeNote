@@ -1,5 +1,6 @@
 package com.xmx.wenote;
 
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.support.v4.app.Fragment;
@@ -159,5 +160,10 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onPageScrollStateChanged(int state) {
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 }

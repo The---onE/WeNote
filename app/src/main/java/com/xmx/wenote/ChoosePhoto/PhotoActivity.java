@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -24,6 +26,7 @@ public class PhotoActivity extends Activity {
     private GridView chosen_gridview;
     private AlbumItem album;
     private PhotoAdapter adapter;
+    private GridView gv;
 
     private ArrayList<PhotoInf> chosen = new ArrayList<>();
 
@@ -36,7 +39,7 @@ public class PhotoActivity extends Activity {
 
         album = (AlbumItem) getIntent().getExtras().get("album");
 
-        GridView gv = (GridView) findViewById(R.id.photo_gridview);
+        gv = (GridView) findViewById(R.id.photo_gridview);
         adapter = new PhotoAdapter(this, album);
         gv.setAdapter(adapter);
         gv.setOnItemClickListener(new OnItemClickListener() {
@@ -104,5 +107,16 @@ public class PhotoActivity extends Activity {
         chosen_gridview.setLayoutParams(params);
         chosen_gridview.setColumnWidth(itemWidth);
         chosen_gridview.setNumColumns(size);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gv.setNumColumns(6);
+        } else {
+            gv.setNumColumns(4);
+        }
     }
 }
