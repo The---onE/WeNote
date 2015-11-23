@@ -40,6 +40,11 @@ public class PhotoActivity extends Activity {
         album = (AlbumItem) getIntent().getExtras().get("album");
 
         gv = (GridView) findViewById(R.id.photo_gridview);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gv.setNumColumns(6);
+        } else {
+            gv.setNumColumns(4);
+        }
         adapter = new PhotoAdapter(this, album);
         gv.setAdapter(adapter);
         gv.setOnItemClickListener(new OnItemClickListener() {
