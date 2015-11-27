@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.xmx.wenote.ChoosePhoto.adapter.ChosenAdapter;
 import com.xmx.wenote.ChoosePhoto.adapter.PhotoAdapter;
@@ -38,60 +38,70 @@ public class PhotoActivity extends Activity {
         setContentView(R.layout.cp_photo_activity);
 
         album = (AlbumItem) getIntent().getExtras().get("album");
+        if (album != null) {
+            TextView tv = (TextView) findViewById(R.id.photo_path);
+            String p = album.getBitList().get(0).getPath();
+            int end = p.lastIndexOf("/");
+            if (end != -1) {
+                tv.setText(p.substring(0, end));
+            } else {
+                tv.setText(null);
+            }
 
-        gv = (GridView) findViewById(R.id.photo_gridview);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            gv.setNumColumns(6);
-        } else {
-            gv.setNumColumns(4);
+            gv = (GridView) findViewById(R.id.photo_gridview);
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                gv.setNumColumns(6);
+            } else {
+                gv.setNumColumns(4);
+            }
+            adapter = new PhotoAdapter(this, album);
+            gv.setAdapter(adapter);
+            gv.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    PhotoInf gridItem = album.getBitList().get(position);
+                    if (gridItem.isSelect()) {
+                        gridItem.setSelect(false);
+                        paths.remove(gridItem.getPath());
+                        chosen.remove(gridItem);
+                        processChosen(false);
+                    } else {
+                        gridItem.setSelect(true);
+                        paths.add(gridItem.getPath());
+                        chosen.add(gridItem);
+                        processChosen(true);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            });
+
+            chosen_gridview = (GridView) findViewById(R.id.chosen_gridview);
+            ChosenAdapter chosen_adapter = new ChosenAdapter(this, chosen);
+            chosen_gridview.setAdapter(chosen_adapter);
+            chosen_gridview.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+                    Intent intent = new Intent(PhotoActivity.this, BigPhotoActivity.class);
+                    intent.putExtra("paths", paths);
+                    intent.putExtra("index", position);
+                    startActivity(intent);
+                }
+            });
+
+            findViewById(R.id.btn_sure).setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    if (!paths.isEmpty()) {
+                        Intent i = new Intent(PhotoActivity.this, AlbumActivity.class);
+                        i.putExtra("paths", paths);
+                        setResult(RESULT_OK, i);
+                        finish();
+                    }
+                }
+            });
         }
-        adapter = new PhotoAdapter(this, album);
-        gv.setAdapter(adapter);
-        gv.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PhotoInf gridItem = album.getBitList().get(position);
-                if (gridItem.isSelect()) {
-                    gridItem.setSelect(false);
-                    paths.remove(gridItem.getPath());
-                    chosen.remove(gridItem);
-                    processChosen(false);
-                } else {
-                    gridItem.setSelect(true);
-                    paths.add(gridItem.getPath());
-                    chosen.add(gridItem);
-                    processChosen(true);
-                }
-                adapter.notifyDataSetChanged();
-            }
-        });
-
-        chosen_gridview = (GridView) findViewById(R.id.chosen_gridview);
-        ChosenAdapter chosen_adapter = new ChosenAdapter(this, chosen);
-        chosen_gridview.setAdapter(chosen_adapter);
-        chosen_gridview.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                Intent intent = new Intent(PhotoActivity.this, BigPhotoActivity.class);
-                intent.putExtra("paths", paths);
-                intent.putExtra("index", position);
-                startActivity(intent);
-            }
-        });
-
-        findViewById(R.id.btn_sure).setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (!paths.isEmpty()) {
-                    Intent i = new Intent(PhotoActivity.this, AlbumActivity.class);
-                    i.putExtra("paths", paths);
-                    setResult(RESULT_OK, i);
-                    finish();
-                }
-            }
-        });
     }
 
     private void processChosen(boolean isSelect) {
