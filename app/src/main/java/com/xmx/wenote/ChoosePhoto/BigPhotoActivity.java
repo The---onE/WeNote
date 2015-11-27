@@ -2,14 +2,16 @@ package com.xmx.wenote.ChoosePhoto;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xmx.wenote.ChoosePhoto.entities.BigGifImageView;
@@ -21,14 +23,12 @@ public class BigPhotoActivity extends Activity {
     LinearLayout layout;
     //JazzyViewPager vp;
     ViewPager vp;
-    BigGifImageView gif_view;
     String path;
     ArrayList<String> paths;
     int index;
     boolean flipFlag;
 
-    private LinearLayout setPhoto(LinearLayout l, String path, int sum, int index) {
-        final BigGifImageView iv = (BigGifImageView) l.findViewById(R.id.big_photo);
+    private RelativeLayout setPhoto(RelativeLayout l, String path, int sum, int index) {
 
         TextView tv = (TextView) l.findViewById(R.id.big_photo_index);
         if (sum <= 0) {
@@ -37,55 +37,36 @@ public class BigPhotoActivity extends Activity {
             tv.setText("" + index + "/" + sum);
         }
 
+        final BigGifImageView iv = (BigGifImageView) l.findViewById(R.id.big_photo);
         boolean flag = iv.setImageByPathLoader(path);
 
-        if (flag) {
-            LinearLayout buttonLayout = new LinearLayout(BigPhotoActivity.this);
-            buttonLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                    0, 2));
-            buttonLayout.setGravity(Gravity.CENTER);
-            buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-            Button upend = new Button(BigPhotoActivity.this);
-            upend.setText("倒放");
-            upend.setTextSize(10);
-            upend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
+        LinearLayout buttonLayout = (LinearLayout) l.findViewById(R.id.big_photo_button);
+        if (!flag) {
+            l.removeView(buttonLayout);
+        } else {
+            Button upend = (Button) buttonLayout.findViewById(R.id.big_photo_upend);
             upend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     iv.upend();
                 }
             });
-            buttonLayout.addView(upend);
 
-            Button pause = new Button(BigPhotoActivity.this);
-            pause.setText("暂停");
-            pause.setTextSize(10);
-            pause.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            Button pause = (Button) buttonLayout.findViewById(R.id.big_photo_pause);
             pause.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     iv.pause();
                 }
             });
-            buttonLayout.addView(pause);
 
-            Button play = new Button(BigPhotoActivity.this);
-            play.setText("播放");
-            play.setTextSize(10);
-            play.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            Button play = (Button) buttonLayout.findViewById(R.id.big_photo_play);
             play.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     iv.play();
                 }
             });
-            buttonLayout.addView(play);
-
-            l.addView(buttonLayout);
         }
         return l;
     }
@@ -94,6 +75,8 @@ public class BigPhotoActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cp_big_photo_activity);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         layout = (LinearLayout) (findViewById(R.id.photo_layout));
 
         index = getIntent().getIntExtra("index", -1);
@@ -101,10 +84,19 @@ public class BigPhotoActivity extends Activity {
         if (index == -1) {
             flipFlag = false;
             path = getIntent().getStringExtra("path");
+            if (path == null) {
+                path = getIntent().getData().toString();
+                if (path != null) {
+                    Uri uri = getIntent().getData();
+                    path = uri.getPath();
+                }
+            }
 
-            LinearLayout l = (LinearLayout) getLayoutInflater().inflate(R.layout.cp_big_photo_item, null);
-            setPhoto(l, path, 0, 0);
-            layout.addView(l);
+            if (path != null) {
+                RelativeLayout l = (RelativeLayout) getLayoutInflater().inflate(R.layout.cp_big_photo_item, null);
+                setPhoto(l, path, 0, 0);
+                layout.addView(l);
+            }
         } else {
             flipFlag = true;
             paths = getIntent().getStringArrayListExtra("paths");
@@ -127,7 +119,7 @@ public class BigPhotoActivity extends Activity {
 
                 @Override
                 public Object instantiateItem(ViewGroup container, int position) {
-                    LinearLayout l = (LinearLayout) getLayoutInflater().inflate(R.layout.cp_big_photo_item, null);
+                    RelativeLayout l = (RelativeLayout) getLayoutInflater().inflate(R.layout.cp_big_photo_item, null);
                     setPhoto(l, paths.get(position), paths.size(), position + 1);
 
                     container.addView(l);
@@ -151,7 +143,7 @@ public class BigPhotoActivity extends Activity {
         super.onConfigurationChanged(newConfig);
 
         for (int i = 0; i < vp.getChildCount(); i++) {
-            LinearLayout layout = (LinearLayout) vp.getChildAt(i);
+            RelativeLayout layout = (RelativeLayout) vp.getChildAt(i);
             BigGifImageView iv = (BigGifImageView) layout.findViewById(R.id.big_photo);
             iv.setImageByPathLoader(iv.getPath());
         }
