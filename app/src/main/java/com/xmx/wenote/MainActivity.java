@@ -55,20 +55,38 @@ public class MainActivity extends FragmentActivity {
     private ViewPager pager;
     private ImageView cursor;
     ArrayList<Fragment> fragments;
-    private int bmpW;
-    private int offset;
-    private int currIndex;
+    private int currIndex = 0;
+    private int one;// 页卡1 -> 页卡2 偏移量
+    private int two;// 页卡1 -> 页卡3 偏移量
 
     private void initImageView() {
         cursor = (ImageView)findViewById(R.id.cursor);
-        bmpW = BitmapFactory.decodeResource(getResources(), R.drawable.cursor).getWidth();// 获取图片宽度
+        int bmpW = BitmapFactory.decodeResource(getResources(), R.drawable.cursor).getWidth();// 获取图片宽度
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int screenW = dm.widthPixels;// 获取分辨率宽度
-        offset = (screenW / 3 - bmpW) / 2;// 计算偏移量
+        int offset = (screenW / 3 - bmpW) / 2;// 计算偏移量
+        one = offset * 2 + bmpW;
+        two = one * 2;
         Matrix matrix = new Matrix();
         matrix.postTranslate(offset, 0);
         cursor.setImageMatrix(matrix);// 设置动画初始位置
+        Animation animation = null;
+        switch (currIndex) {
+            case 1:
+                animation = new TranslateAnimation(0, one, 0, 0);
+                break;
+            case 2:
+                animation = new TranslateAnimation(0, two, 0, 0);
+                break;
+            default:
+                break;
+        }
+        if (animation != null) {
+            animation.setFillAfter(true);// True:图片停在动画结束位置
+            animation.setDuration(0);
+            cursor.startAnimation(animation);
+        }
     }
 
     private void initTextView() {
@@ -117,10 +135,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
-
-        int one = offset * 2 + bmpW;// 页卡1 -> 页卡2 偏移量
-        int two = one * 2;// 页卡1 -> 页卡3 偏移量
-
         @Override
         public void onPageSelected(int position) {
             Animation animation = null;
@@ -165,5 +179,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+
+        initImageView();
     }
 }
