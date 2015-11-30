@@ -54,6 +54,8 @@ public class PlanFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         TimePicker time = (TimePicker) getActivity().findViewById(R.id.plan_time);
         time.setIs24HourView(true);
+        time.setSaveFromParentEnabled(false);
+        time.setSaveEnabled(true);
 
         Button choose = (Button) getActivity().findViewById(R.id.plan_choose);
         choose.setOnClickListener(new View.OnClickListener() {
